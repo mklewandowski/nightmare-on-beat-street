@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
         audioSource = this.GetComponent<AudioSource>();
     }
 
-    public void StartMusic(int levelNum)
+    public void StartMusic()
     {
         audioSource.clip = GameMusic;
         audioSource.loop = false;

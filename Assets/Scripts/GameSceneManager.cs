@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -24,6 +25,41 @@ public class GameSceneManager : MonoBehaviour
     };
     int introIndex = 0;
 
+    [SerializeField]
+    GameObject Level;
+    [SerializeField]
+    GameObject[] Highlights;
+    [SerializeField]
+    GameObject[] Glows;
+    [SerializeField]
+    GameObject RowPrefab;
+    [SerializeField]
+    GameObject RowContainer;
+    [SerializeField]
+    GameObject Rate;
+    [SerializeField]
+    TextMeshProUGUI RateText;
+    [SerializeField]
+    TextMeshProUGUI RateRearText;
+    [SerializeField]
+    GameObject Combo;
+    [SerializeField]
+    TextMeshProUGUI ComboText;
+    [SerializeField]
+    TextMeshProUGUI ComboRearText;
+    List<GameObject> Rows = new List<GameObject>();
+    float rowTimer = 0;
+    float rowTimerMax = 2f;
+    float inGoodThreshold = -60f;
+    float inGreatThreshold = -47f;
+    float inPerfectThreshold = -34f;
+    float destroyThreshold = -27f;
+    int combo = 0;
+
+    Coroutine RateCoroutine;
+    Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
+    Color badColor = new Color(255f/255f, 0, 110f/255f);
+
     void Awake()
     {
         audioManager = this.GetComponent<AudioManager>();
@@ -39,7 +75,16 @@ public class GameSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        PlayGame();
+    }
+
+    void PlayGame()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Playing)
+            return;
+        HandleInput();
+        MoveRows();
+        HandleRowCreation();
     }
 
     public void SelectStartButton()
@@ -48,7 +93,6 @@ public class GameSceneManager : MonoBehaviour
         audioManager.PlayButtonSound();
         Title.GetComponent<MoveNormal>().MoveUp();
         TitleButtons.GetComponent<MoveNormal>().MoveDown();   
-
         IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
     }
 
@@ -70,9 +114,11 @@ public class GameSceneManager : MonoBehaviour
         }
         else
         {
-            // START GAME
             IntroText.GetComponent<TextMeshProUGUI>().text = "";
             NextButton.GetComponent<MoveNormal>().MoveDown();
+            Globals.CurrentGameState = Globals.GameStates.Playing;
+            Level.GetComponent<MoveNormal>().MoveDown();
+            audioManager.StartMusic();
         }
     }
 
@@ -118,6 +164,168 @@ public class GameSceneManager : MonoBehaviour
 
     void VetInput(Globals.Orientations inputOrientation)
     {
-
+        if (Globals.CurrentGameState != Globals.GameStates.Playing)
+            return;
+        if (Rows.Count > 0 && Rows[0].GetComponent<Row>().CurrentScoreQuality != Globals.ScoreQualities.Invalid)
+        {
+            if (Rows[0].GetComponent<Row>().Orientation == inputOrientation)
+            {
+                if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Good)
+                {
+                    if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+                    RateCoroutine = StartCoroutine(ShowRate("GOOD", goodColor));
+                }
+                else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Great)
+                {
+                    if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+                    RateCoroutine = StartCoroutine(ShowRate("GREAT", goodColor));
+                }
+                else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Perfect)
+                {
+                    if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+                    RateCoroutine = StartCoroutine(ShowRate("PERFECT", goodColor));
+                    combo++;
+                    if (combo > 1)
+                        ShowCombo();
+                }
+                StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
+            }
+            else 
+            {
+                StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, badColor, .15f, .3f));
+                if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+                RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
+                combo = 0;
+                HideCombo();
+            }
+            Destroy(Rows[0]);
+            Rows.RemoveAt(0);
+        }
+        else
+        {
+            if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+            RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
+            combo = 0;
+            HideCombo();
+        }
     }
+
+
+    void MoveRows()
+    {
+        bool deleteFirst = false;
+        foreach (GameObject r in Rows)
+        {
+            float speed = 100f;
+            r.transform.localPosition = new Vector3(r.transform.localPosition.x, r.transform.localPosition.y + speed * Time.deltaTime, r.transform.localPosition.z);
+            Row row = r.GetComponent<Row>();
+            if (r.transform.localPosition.y >= inGoodThreshold && r.transform.localPosition.y < inGreatThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Good)
+            {
+                r.GetComponent<Row>().SetGood();
+            }
+            else if (r.transform.localPosition.y >= inGreatThreshold && r.transform.localPosition.y < inPerfectThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Great)
+            {
+                r.GetComponent<Row>().SetGreat();
+            }
+            else if (r.transform.localPosition.y >= inPerfectThreshold && r.transform.localPosition.y < destroyThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Perfect)
+            {
+                r.GetComponent<Row>().SetPerfect();
+            }
+            else if (r.transform.localPosition.y >= destroyThreshold)
+            {
+                deleteFirst = true;
+            }
+        }
+        if (deleteFirst)
+        {
+            // if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+            // RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
+            Destroy(Rows[0]);
+            Rows.RemoveAt(0);
+        }
+    }
+
+    public void HandleRowCreation()
+    {
+        rowTimer -= Time.deltaTime;
+        if (rowTimer <= 0)
+        {
+            CreateRow();
+            rowTimer = rowTimerMax;
+        }
+    }
+
+    void CreateRow()
+    {
+        Globals.Orientations newOrientation = (Globals.Orientations)Random.Range(0, 4);
+        
+        if (newOrientation != Globals.Orientations.None)
+        {
+            GameObject row = Instantiate(RowPrefab, new Vector3(0, -100f, 0), Quaternion.identity, RowContainer.transform);
+            RectTransform rt = row.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
+            rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -200f, rt.transform.localPosition.z);
+            row.GetComponent<Row>().SetArrow(newOrientation);
+            row.GetComponent<Row>().Orientation = newOrientation;
+            Rows.Add(row);
+        }
+    }
+
+    IEnumerator ShowHighlight(Globals.Orientations o, Color c, float inTime, float outTime)
+    {
+        int index = (int)o;
+        float maxInTime = inTime;
+        float maxOutTime = outTime;
+        Highlights[index].GetComponent<Image>().color = c;
+        Glows[index].GetComponent<Image>().color = c;
+        Highlights[index].SetActive(true);
+        Glows[index].SetActive(true);
+        while (inTime >= 0.0f) 
+        {
+            Glows[index].GetComponent<Image>().color = new Color(c.r, c.g, c.b, 1f - inTime / maxInTime);
+            inTime -= Time.deltaTime;
+            yield return null; 
+        }
+        while (outTime >= 0.0f) 
+        {
+            Glows[index].GetComponent<Image>().color = new Color(c.r, c.g, c.b, outTime / maxOutTime);
+            Highlights[index].GetComponent<Image>().color = new Color(c.r, c.g, c.b, outTime / maxOutTime);
+            outTime -= Time.deltaTime;
+            yield return null; 
+        }
+        Highlights[index].SetActive(false);
+        Glows[index].SetActive(false);
+    }
+
+    IEnumerator ShowRate (string text, Color c)
+    {
+        float maxTime = .7f;
+        RateText.color = c;
+        RateText.text = text;
+        RateRearText.text = text;
+        Rate.transform.localScale = new Vector3(.1f, .1f, .1f);
+        Rate.SetActive(true);
+        Rate.GetComponent<GrowAndShrink>().StartEffect();
+        while (maxTime >= 0.0f) 
+        {
+            maxTime -= Time.deltaTime;
+            yield return null; 
+        }
+        Rate.SetActive(false);
+    }
+
+    void ShowCombo()
+    {
+        ComboText.text = combo.ToString();
+        ComboRearText.text = combo.ToString();
+        Combo.transform.localScale = new Vector3(.1f, .1f, .1f);
+        Combo.SetActive(true);
+        Combo.GetComponent<GrowAndShrink>().StartEffect();
+    }
+
+    void HideCombo()
+    {
+        Combo.SetActive(false);
+    }
+
 }

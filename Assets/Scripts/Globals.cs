@@ -9,7 +9,6 @@ public class Globals
     public enum GameStates {
         Title,
         Playing,
-        LevelComplete,
         Stats,
     }
     public static GameStates CurrentGameState = GameStates.Title;
