@@ -7,6 +7,7 @@ using TMPro;
 public class TypewriterUI : MonoBehaviour
 {
     AudioManager audioManager;
+    GameSceneManager gameSceneManager;
 
     TextMeshProUGUI HUDText;
 
@@ -20,8 +21,9 @@ public class TypewriterUI : MonoBehaviour
 
     void Start()
     {
-        GameObject am = GameObject.Find("GameManager");
-        audioManager = am.GetComponent<AudioManager>();
+        GameObject gm = GameObject.Find("GameSceneManager");
+        audioManager = gm.GetComponent<AudioManager>();
+        gameSceneManager = gm.GetComponent<GameSceneManager>();
         HUDText = this.GetComponent<TextMeshProUGUI>();
     }
 
@@ -38,6 +40,10 @@ public class TypewriterUI : MonoBehaviour
                 if (textLength < textToType.Length)
                 {
                     typeTimer = typeTimerMax;
+                }
+                else 
+                {
+                    gameSceneManager.EndText();
                 }
             }
         }
