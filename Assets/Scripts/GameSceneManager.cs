@@ -368,7 +368,7 @@ public class GameSceneManager : MonoBehaviour
                         ShowCombo();
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
-                AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition);
+                AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
                 Destroy(Enemies[0]);
                 Enemies.RemoveAt(0);
                 audioManager.PlayHitEnemySound();
@@ -397,12 +397,16 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
-    void AttackEnemy(Vector2 pos)
+    void AttackEnemy(Vector2 pos, bool flip)
     {
         GameObject aGO = Instantiate(AttackPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
         aGO.GetComponent<RectTransform>().anchoredPosition = pos;
+        if (flip)
+            aGO.transform.localEulerAngles = new Vector3(0, 180f, 0);
         GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
         bGO.GetComponent<RectTransform>().anchoredPosition = pos;
+        if (flip)
+            bGO.transform.localEulerAngles = new Vector3(0, 180f, 0);
     }
 
     void MoveRows()
