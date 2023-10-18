@@ -84,7 +84,7 @@ public class GameSceneManager : MonoBehaviour
 
     Coroutine RateCoroutine;
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
-    Color badColor = new Color(255f/255f, 0, 110f/255f);
+    Color badColor = new Color(240f/255f, 16f/255f, 16f/255f);
 
     void Awake()
     {
@@ -230,7 +230,7 @@ public class GameSceneManager : MonoBehaviour
             {
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, badColor, .15f, .3f));
                 if (RateCoroutine != null) StopCoroutine(RateCoroutine);
-                RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
+                RateCoroutine = StartCoroutine(ShowRate("WRONG", badColor));
                 combo = 0;
                 HideCombo();
                 EnemiesMissed.Add(Enemies[0]);
