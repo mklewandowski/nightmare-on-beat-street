@@ -86,6 +86,8 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     GameObject AttackPrefab;
     [SerializeField]
+    GameObject FlashPrefab;
+    [SerializeField]
     GameObject Ready;
     [SerializeField]
     TextMeshProUGUI ReadyText;
@@ -489,6 +491,8 @@ public class GameSceneManager : MonoBehaviour
         }
         if (deleteFirst)
         {
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesMissed[0].GetComponent<RectTransform>().anchoredPosition;
             Destroy(EnemiesMissed[0]);
             EnemiesMissed.RemoveAt(0);
             HitPlayer();
@@ -522,19 +526,19 @@ public class GameSceneManager : MonoBehaviour
 
         foreach (GameObject e in Enemies)
         {
-            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
             Destroy(e);
         }
         foreach (GameObject e in EnemiesMissed)
         {
-            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
             Destroy(e);
         }
         foreach (GameObject r in Rows)
         {
-            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = r.GetComponent<RectTransform>().anchoredPosition;
             Destroy(r);
         }

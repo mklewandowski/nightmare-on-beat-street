@@ -1057,6 +1057,7 @@ MonoBehaviour:
   GameScore: {fileID: 1083549932}
   BloodPrefab: {fileID: 1400289319760674327, guid: 1a39ac071e222c74298dc6b36400c3f4, type: 3}
   AttackPrefab: {fileID: 9063041059167039370, guid: 0ce0569980e4ffe49bcb7453d93731e5, type: 3}
+  FlashPrefab: {fileID: 4762435234882959334, guid: 50eddbb905983544a8c3bcf9ad91a1b2, type: 3}
   Ready: {fileID: 969705598}
   ReadyText: {fileID: 1712930442}
   ReadyRearText: {fileID: 1374745088}
