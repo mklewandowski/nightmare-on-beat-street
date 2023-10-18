@@ -54,6 +54,8 @@ public class GameSceneManager : MonoBehaviour
     GameObject EnemyContainer;
     [SerializeField]
     GameObject LifeBar;
+    [SerializeField]
+    TextMeshProUGUI GameTime;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -69,6 +71,7 @@ public class GameSceneManager : MonoBehaviour
     int life = 4;
     float lifebarMaxWidth = 43f;
     int maxLife = 4;
+    float gameTime = 0;
 
     Coroutine RateCoroutine;
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
@@ -100,6 +103,7 @@ public class GameSceneManager : MonoBehaviour
         MoveRows();
         MoveEnemies();
         HandleRowCreation();
+        HandleTime();
     }
 
     public void SelectStartButton()
@@ -341,6 +345,12 @@ public class GameSceneManager : MonoBehaviour
     void EndGame()
     {
 
+    }
+
+    void HandleTime()
+    {
+        gameTime += Time.deltaTime;
+        GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
     }
 
     public void HandleRowCreation()
