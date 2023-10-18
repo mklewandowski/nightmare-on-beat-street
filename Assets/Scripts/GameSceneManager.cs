@@ -18,18 +18,34 @@ public class GameSceneManager : MonoBehaviour
     GameObject NextButton;
     [SerializeField]
     TextMeshProUGUI NextButtonText;
-    // string[] introText = {
-    //     "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
-    //     "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
-    //     "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
-    // };
     string[] introText = {
-        "start"
+        "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
+        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
+        "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
     };
     int introIndex = 0;
 
     [SerializeField]
+    GameObject SummaryText;
+    [SerializeField]
+    GameObject TryAgainButton;
+    [SerializeField]
+    GameObject SummaryScore;
+    [SerializeField]
+    TextMeshProUGUI SummaryScoreText;
+    [SerializeField]
+    TextMeshProUGUI SummaryScoreRearText;
+    [SerializeField]
+    GameObject SummaryBestScore;
+    [SerializeField]
+    TextMeshProUGUI SummaryBestScoreText;
+    [SerializeField]
+    TextMeshProUGUI SummaryBestScoreRearText;
+    [SerializeField]
     GameObject Level;
+
+    [SerializeField]
+    GameObject Player;
     [SerializeField]
     GameObject[] Highlights;
     [SerializeField]
@@ -72,6 +88,8 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI ReadyText;
     [SerializeField]
     TextMeshProUGUI ReadyRearText;
+    [SerializeField]
+    GameObject GameOver;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -103,6 +121,9 @@ public class GameSceneManager : MonoBehaviour
     string[] readyStrings = {"3", "2", "1", "GO"};
     int readyIndex = 0;
 
+    float gameOverTimer = 3f;
+    float gameOverTimerMax = 3f;
+
     void Awake()
     {
         audioManager = this.GetComponent<AudioManager>();
@@ -120,6 +141,7 @@ public class GameSceneManager : MonoBehaviour
     {
         GetReady();
         PlayGame();
+        ShowGameOver();
     }
 
     void GetReady()
@@ -159,6 +181,27 @@ public class GameSceneManager : MonoBehaviour
         HandleSpeed();
     }
 
+    void ShowGameOver()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.GameOver)
+            return;
+
+        gameOverTimer -= Time.deltaTime;
+        if (gameOverTimer <= 0)
+        {
+            Level.GetComponent<MoveNormal>().MoveDown();
+            string summary = "You survived for " + gameTime.ToString("0.0") + " seconds ";
+            string[] results = {
+                "and then the creatures ripped you limb from limb.",
+                "and then the creatures tore through your chest cavity and devoured your heart.",
+                "and then the creatures gouged your eyes and face until you slowly bled to death."
+            };
+            summary += results[Random.Range(0, results.Length)];
+            SummaryText.GetComponent<TypewriterUI>().StartEffect("", summary);
+            Globals.CurrentGameState = Globals.GameStates.Summary;
+        }
+    }
+
     public void SelectStartButton()
     {      
         audioManager.StopMusic();
@@ -170,9 +213,27 @@ public class GameSceneManager : MonoBehaviour
 
     public void EndText()
     {
-        if (introIndex >= introText.Length - 1)
-            NextButtonText.text = "PLAY";
-        NextButton.GetComponent<MoveNormal>().MoveUp();
+        if (Globals.CurrentGameState == Globals.GameStates.Title)
+        {
+            if (introIndex >= introText.Length - 1)
+                NextButtonText.text = "PLAY";
+            NextButton.GetComponent<MoveNormal>().MoveUp();
+        }
+        else if (Globals.CurrentGameState == Globals.GameStates.Summary)
+        {
+            TryAgainButton.GetComponent<MoveNormal>().MoveUp();
+            SummaryScoreText.text = "SCORE:" + gameScore.ToString();
+            SummaryScoreRearText.text = SummaryScoreText.text;
+            SummaryScore.transform.localScale = new Vector3(.1f, .1f, .1f);
+            SummaryScore.SetActive(true);
+            SummaryScore.GetComponent<GrowAndShrink>().StartEffect();
+
+            SummaryBestScoreText.text = "BEST SCORE:" + Globals.BestScore.ToString();
+            SummaryBestScoreRearText.text = SummaryBestScoreText.text;
+            SummaryBestScore.transform.localScale = new Vector3(.1f, .1f, .1f);
+            SummaryBestScore.SetActive(true);
+            SummaryBestScore.GetComponent<GrowAndShrink>().StartEffect();
+        }
     }
 
     public void AdvanceIntro()
@@ -406,13 +467,44 @@ public class GameSceneManager : MonoBehaviour
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
 
+        GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+        bGO.GetComponent<RectTransform>().anchoredPosition = Player.GetComponent<RectTransform>().anchoredPosition;
+
         if (life == 0)
             EndGame();
     }
 
     void EndGame()
     {
+        gameOverTimer = gameOverTimerMax;
+        Globals.CurrentGameState = Globals.GameStates.GameOver;
+        audioManager.StopMusic();
+        GameOver.transform.localScale = new Vector3(.1f, .1f, .1f);
+        GameOver.SetActive(true);
+        GameOver.GetComponent<GrowAndShrink>().StartEffect();
+        Player.SetActive(false);
 
+        foreach (GameObject e in Enemies)
+        {
+            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
+            Destroy(e);
+        }
+        foreach (GameObject e in EnemiesMissed)
+        {
+            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
+            Destroy(e);
+        }
+        foreach (GameObject r in Rows)
+        {
+            GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = r.GetComponent<RectTransform>().anchoredPosition;
+            Destroy(r);
+        }
+        Enemies.Clear();
+        EnemiesMissed.Clear();
+        Rows.Clear();
     }
 
     void HandleTime()
@@ -464,7 +556,6 @@ public class GameSceneManager : MonoBehaviour
             row.GetComponent<Row>().Orientation = newOrientation;
             Rows.Add(row);
             CreateEnemy(newOrientation);
-
         }
     }
 

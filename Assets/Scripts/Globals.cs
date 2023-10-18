@@ -5,12 +5,14 @@ using UnityEngine;
 public class Globals
 {
     public static bool AudioOn = true;
+    public static int BestScore = 0;
 
     public enum GameStates {
         Title,
         GetReady,
         Playing,
-        Stats,
+        GameOver,
+        Summary,
     }
     public static GameStates CurrentGameState = GameStates.Title;
 
