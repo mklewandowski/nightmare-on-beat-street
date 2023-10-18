@@ -30,7 +30,6 @@ public class AudioManager : MonoBehaviour
     public void StartMusic()
     {
         audioSource.clip = GameMusic;
-        audioSource.loop = false;
         audioSource.Play();
     }
     public void StopMusic()
