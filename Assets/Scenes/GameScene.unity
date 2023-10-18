@@ -994,6 +994,7 @@ MonoBehaviour:
   CountdownSound: {fileID: 8300000, guid: 317a26338ff9ccb48ba0eb5f73695f44, type: 3}
   StartSound: {fileID: 8300000, guid: 3c9287645932c0c4cb7b8d4b3ba5db0d, type: 3}
   HitPlayerSound: {fileID: 8300000, guid: bf17c3f497857314ebfbcf361bcc7c4b, type: 3}
+  DeathSound: {fileID: 8300000, guid: 4e706f17821a1b64596f1c43ce776122, type: 3}
   BadInputSound: {fileID: 8300000, guid: 46f601ceb7c45b340aaa1aeed23515a6, type: 3}
   HitEnemySounds:
   - {fileID: 8300000, guid: fab3ade79b1875242a1cb90376bd55b8, type: 3}

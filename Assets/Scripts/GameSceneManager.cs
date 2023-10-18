@@ -522,6 +522,7 @@ public class GameSceneManager : MonoBehaviour
         Globals.CurrentGameState = Globals.GameStates.GameOver;
         audioManager.StopMusic();
         audioManager.PlayHitPlayerSound();
+        audioManager.PlayDeathSound();
         GameOver.transform.localScale = new Vector3(.1f, .1f, .1f);
         GameOver.SetActive(true);
         GameOver.GetComponent<GrowAndShrink>().StartEffect();
