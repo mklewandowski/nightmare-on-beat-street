@@ -77,6 +77,10 @@ public class GameSceneManager : MonoBehaviour
     float lifebarMaxWidth = 43f;
     int maxLife = 4;
     float gameTime = 0;
+    float speedTimer = 10f;
+    float maxSpeedTimer = 10f;
+    float rowSpeed = 100f;
+    float enemySpeed = 60f;
 
     Coroutine RateCoroutine;
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
@@ -109,6 +113,7 @@ public class GameSceneManager : MonoBehaviour
         MoveEnemies();
         HandleRowCreation();
         HandleTime();
+        HandleSpeed();
     }
 
     public void SelectStartButton()
@@ -256,8 +261,7 @@ public class GameSceneManager : MonoBehaviour
         bool deleteFirst = false;
         foreach (GameObject r in Rows)
         {
-            float speed = 100f;
-            r.transform.localPosition = new Vector3(r.transform.localPosition.x, r.transform.localPosition.y + speed * Time.deltaTime, r.transform.localPosition.z);
+            r.transform.localPosition = new Vector3(r.transform.localPosition.x, r.transform.localPosition.y + rowSpeed * Time.deltaTime, r.transform.localPosition.z);
             Row row = r.GetComponent<Row>();
             if (r.transform.localPosition.y >= inGoodThreshold && r.transform.localPosition.y < inGreatThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Good)
             {
@@ -297,17 +301,17 @@ public class GameSceneManager : MonoBehaviour
         foreach (GameObject e in Enemies)
         {
             float xSpeed = 0;
-            float ySpeed = -60f;
+            float ySpeed = enemySpeed * -1f;
             Enemy enemy = e.GetComponent<Enemy>();
             if (enemy.StartPosition == Globals.StartPositions.Left)
             {
                 ySpeed = 0;
-                xSpeed = 60f;
+                xSpeed = enemySpeed;
             }
             else if (enemy.StartPosition == Globals.StartPositions.Right)
             {
                 ySpeed = 0;
-                xSpeed = -60f;
+                xSpeed = enemySpeed * -1f;
             }
             e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
         }
@@ -315,19 +319,19 @@ public class GameSceneManager : MonoBehaviour
         foreach (GameObject e in EnemiesMissed)
         {
             float xSpeed = 0;
-            float ySpeed = -60f;
+            float ySpeed = enemySpeed * -1f;
             Enemy enemy = e.GetComponent<Enemy>();
             if (enemy.StartPosition == Globals.StartPositions.Left)
             {
                 ySpeed = 0;
-                xSpeed = 60f;
+                xSpeed = enemySpeed;
                 if (Mathf.Abs(e.transform.localPosition.x) < 10f)
                     deleteFirst = true;
             }
             else if (enemy.StartPosition == Globals.StartPositions.Right)
             {
                 ySpeed = 0;
-                xSpeed = -60f;
+                xSpeed = enemySpeed * -1f;
                 if (Mathf.Abs(e.transform.localPosition.x) < 10f)
                     deleteFirst = true;
             }
@@ -365,6 +369,18 @@ public class GameSceneManager : MonoBehaviour
     {
         gameTime += Time.deltaTime;
         GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
+    }
+
+    void HandleSpeed()
+    {
+        speedTimer -= Time.deltaTime;
+        if (speedTimer <= 0)
+        {
+            speedTimer = maxSpeedTimer;
+            rowSpeed = Mathf.Min(205f, rowSpeed + 15f);
+            enemySpeed = Mathf.Min(205f, enemySpeed + 15f);
+            rowTimerMax = Mathf.Max(.5f, rowTimerMax - .1f);
+        }
     }
 
     public void HandleRowCreation()
