@@ -18,10 +18,13 @@ public class GameSceneManager : MonoBehaviour
     GameObject NextButton;
     [SerializeField]
     TextMeshProUGUI NextButtonText;
+    // string[] introText = {
+    //     "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
+    //     "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
+    //     "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
+    // };
     string[] introText = {
-        "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
-        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
-        "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
+        "start"
     };
     int introIndex = 0;
 
@@ -56,6 +59,8 @@ public class GameSceneManager : MonoBehaviour
     GameObject LifeBar;
     [SerializeField]
     TextMeshProUGUI GameTime;
+    [SerializeField]
+    TextMeshProUGUI GameScore;
 
     [SerializeField]
     GameObject BloodPrefab;
@@ -87,6 +92,7 @@ public class GameSceneManager : MonoBehaviour
     float maxSpeedTimer = 10f;
     float rowSpeed = 100f;
     float enemySpeed = 60f;
+    int gameScore = 0;
 
     Coroutine RateCoroutine;
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
@@ -244,6 +250,7 @@ public class GameSceneManager : MonoBehaviour
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GOOD", goodColor));
+                    AddScore(5);
                     combo = 0;
                     HideCombo();
                 }
@@ -251,6 +258,7 @@ public class GameSceneManager : MonoBehaviour
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GREAT", goodColor));
+                    AddScore(10);
                     combo = 0;
                     HideCombo();
                 }
@@ -258,6 +266,7 @@ public class GameSceneManager : MonoBehaviour
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("PERFECT", goodColor));
+                    AddScore(20);
                     combo++;
                     if (combo > 1)
                         ShowCombo();
@@ -410,6 +419,13 @@ public class GameSceneManager : MonoBehaviour
     {
         gameTime += Time.deltaTime;
         GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
+    }
+
+    void AddScore(int num)
+    {
+        gameScore += num;
+        GameScore.text = "<mspace=.6em>" + gameScore.ToString();
+        GameScore.gameObject.GetComponent<GrowAndShrink>().StartEffect();
     }
 
     void HandleSpeed()
