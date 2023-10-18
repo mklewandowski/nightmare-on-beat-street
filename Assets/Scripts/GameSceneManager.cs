@@ -211,6 +211,15 @@ public class GameSceneManager : MonoBehaviour
         IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
     }
 
+    public void SelectPlayAgainButton()
+    {
+        SummaryText.GetComponent<TextMeshProUGUI>().text = "";
+        SummaryBestScore.SetActive(false);
+        SummaryScore.SetActive(false);
+        TryAgainButton.GetComponent<MoveNormal>().MoveDown();
+        StartGetReady();
+    }
+
     public void EndText()
     {
         if (Globals.CurrentGameState == Globals.GameStates.Title)
@@ -249,14 +258,31 @@ public class GameSceneManager : MonoBehaviour
         {
             IntroText.GetComponent<TextMeshProUGUI>().text = "";
             NextButton.GetComponent<MoveNormal>().MoveDown();
-            Ready.SetActive(true);
-            readyIndex = 0;
-            readyTimer = readyTimerMax;
-            ReadyText.text = readyStrings[readyIndex];
-            ReadyRearText.text = readyStrings[readyIndex];
-            Globals.CurrentGameState = Globals.GameStates.GetReady;
-            Level.GetComponent<MoveNormal>().MoveUp();
+            StartGetReady();
         }
+    }
+
+    void StartGetReady()
+    {
+        Ready.SetActive(true);
+        readyIndex = 0;
+        readyTimer = readyTimerMax;
+        ReadyText.text = readyStrings[readyIndex];
+        ReadyRearText.text = readyStrings[readyIndex];
+        Globals.CurrentGameState = Globals.GameStates.GetReady;
+        Player.SetActive(true);
+        life = maxLife;
+        float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
+        LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
+        gameScore = 0;
+        gameTime = 0;
+        GameScore.text = "<mspace=.6em>" + gameScore.ToString();
+        GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
+        GameOver.SetActive(false);
+        rowSpeed = 100f;
+        enemySpeed = 60f;
+        speedTimer = maxSpeedTimer;
+        Level.GetComponent<MoveNormal>().MoveUp();
     }
 
     public void HandleInput()
