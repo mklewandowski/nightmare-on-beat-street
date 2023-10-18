@@ -40,9 +40,10 @@ public class Globals
         ZombieRun,
         Ghost,
         Pumpkin,
-        Robot,
-        ZombieLady,
-        ZombieMan,
+        ZombieLadyRun,
+        // Robot,
+        // ZombieLady,
+        // ZombieMan,
     }
     
 }
