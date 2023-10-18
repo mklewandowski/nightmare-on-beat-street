@@ -131,6 +131,7 @@ public class GameSceneManager : MonoBehaviour
 
     void Awake()
     {
+        Globals.BestScore = Globals.LoadIntFromPlayerPrefs(Globals.BestScorePlayerPrefsKey);
         audioManager = this.GetComponent<AudioManager>();
     }
 
@@ -250,6 +251,12 @@ public class GameSceneManager : MonoBehaviour
             SummaryScore.transform.localScale = new Vector3(.1f, .1f, .1f);
             SummaryScore.SetActive(true);
             SummaryScore.GetComponent<GrowAndShrink>().StartEffect();
+
+            if (gameScore > Globals.BestScore)
+            {
+                Globals.BestScore = gameScore;
+                Globals.SaveIntToPlayerPrefs(Globals.BestScorePlayerPrefsKey, Globals.BestScore);
+            }
 
             SummaryBestScoreText.text = "BEST SCORE:" + Globals.BestScore.ToString();
             SummaryBestScoreRearText.text = SummaryBestScoreText.text;

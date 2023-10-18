@@ -6,6 +6,7 @@ public class Globals
 {
     public static bool AudioOn = true;
     public static int BestScore = 0;
+    public const string BestScorePlayerPrefsKey = "BestScore";
 
     public enum GameStates {
         Title,
@@ -45,8 +46,16 @@ public class Globals
         Pumpkin,
         ZombieLadyRun,
         Robot,
-        // ZombieLady,
-        // ZombieMan,
+    }
+
+    public static void SaveIntToPlayerPrefs(string key, int val)
+    {
+        PlayerPrefs.SetInt(key, val);
+    }
+    public static int LoadIntFromPlayerPrefs(string key, int defaultVal = 0)
+    {
+        int val = PlayerPrefs.GetInt(key, defaultVal);
+        return val;
     }
     
 }
