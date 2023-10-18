@@ -200,6 +200,11 @@ public class GameSceneManager : MonoBehaviour
             Level.GetComponent<MoveNormal>().MoveDown();
             string summary = "You survived for " + gameTime.ToString("0.0") + " seconds ";
             string[] results = {
+                "and then a blood-sucking ghoul swallowed your organs.",
+                "and then you succumbed to the nightmare.",
+                "and then then you were dragged down into the lair of the beasts.",
+                "and then your soul was wrenched from your lifeless corpse.",
+                "and then a fiendish beast dined on your innards.",
                 "and then the creatures ripped you limb from limb.",
                 "and then the creatures tore through your chest cavity and devoured your heart.",
                 "and then the creatures gouged your eyes and face until you slowly bled to death."
