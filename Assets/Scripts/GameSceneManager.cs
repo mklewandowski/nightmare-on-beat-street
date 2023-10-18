@@ -521,6 +521,7 @@ public class GameSceneManager : MonoBehaviour
     void HitPlayer()
     {
         audioManager.PlayHitPlayerSound();
+        audioManager.PlayHitEnemySound();
         life--;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
@@ -538,6 +539,7 @@ public class GameSceneManager : MonoBehaviour
         Globals.CurrentGameState = Globals.GameStates.GameOver;
         audioManager.StopMusic();
         audioManager.PlayHitPlayerSound();
+        audioManager.PlayHitEnemySound();
         audioManager.PlayDeathSound();
         GameOver.transform.localScale = new Vector3(.1f, .1f, .1f);
         GameOver.SetActive(true);

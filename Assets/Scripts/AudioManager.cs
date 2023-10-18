@@ -100,13 +100,13 @@ public class AudioManager : MonoBehaviour
     
     public void PlayClickSound()
     {
-        int num = Random.Range(0, ClickSounds.Length - 1);
+        int num = Random.Range(0, ClickSounds.Length);
         audioSource.PlayOneShot(ClickSounds[num], .5f);
     }
 
     public void PlayHitEnemySound()
     {
-        int num = Random.Range(0, HitEnemySounds.Length - 1);
+        int num = Random.Range(0, HitEnemySounds.Length);
         audioSource.PlayOneShot(HitEnemySounds[num], 1f);
     }
 }
