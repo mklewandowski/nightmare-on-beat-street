@@ -52,6 +52,8 @@ public class GameSceneManager : MonoBehaviour
     GameObject EnemyPrefab;
     [SerializeField]
     GameObject EnemyContainer;
+    [SerializeField]
+    GameObject LifeBar;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -59,11 +61,14 @@ public class GameSceneManager : MonoBehaviour
 
     float rowTimer = 0;
     float rowTimerMax = 1f;
-    float inGoodThreshold = -60f;
-    float inGreatThreshold = -47f;
-    float inPerfectThreshold = -34f;
-    float destroyThreshold = -27f;
+    float inGoodThreshold = -70f;
+    float inGreatThreshold = -57f;
+    float inPerfectThreshold = -44f;
+    float destroyThreshold = -37f;
     int combo = 0;
+    int life = 4;
+    float lifebarMaxWidth = 43f;
+    int maxLife = 4;
 
     Coroutine RateCoroutine;
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
@@ -109,7 +114,7 @@ public class GameSceneManager : MonoBehaviour
     public void EndText()
     {
         if (introIndex >= introText.Length - 1)
-            NextButtonText.text = "START";
+            NextButtonText.text = "PLAY";
         NextButton.GetComponent<MoveNormal>().MoveUp();
     }
 
@@ -184,11 +189,15 @@ public class GameSceneManager : MonoBehaviour
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GOOD", goodColor));
+                    combo = 0;
+                    HideCombo();
                 }
                 else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Great)
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GREAT", goodColor));
+                    combo = 0;
+                    HideCombo();
                 }
                 else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Perfect)
                 {
@@ -251,8 +260,11 @@ public class GameSceneManager : MonoBehaviour
         }
         if (deleteFirst)
         {
-            // if (RateCoroutine != null) StopCoroutine(RateCoroutine);
-            // RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
+            if (RateCoroutine != null) StopCoroutine(RateCoroutine);
+            RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
+            combo = 0;
+            HideCombo();
+
             Destroy(Rows[0]);
             Rows.RemoveAt(0);
 
@@ -317,6 +329,16 @@ public class GameSceneManager : MonoBehaviour
     }
 
     void HitPlayer()
+    {
+        life--;
+        float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
+        LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
+
+        if (life == 0)
+            EndGame();
+    }
+
+    void EndGame()
     {
 
     }
