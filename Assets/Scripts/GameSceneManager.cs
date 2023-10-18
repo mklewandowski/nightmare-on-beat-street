@@ -61,6 +61,12 @@ public class GameSceneManager : MonoBehaviour
     GameObject BloodPrefab;
     [SerializeField]
     GameObject AttackPrefab;
+    [SerializeField]
+    GameObject Ready;
+    [SerializeField]
+    TextMeshProUGUI ReadyText;
+    [SerializeField]
+    TextMeshProUGUI ReadyRearText;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -86,6 +92,11 @@ public class GameSceneManager : MonoBehaviour
     Color goodColor = new Color(255f/255f, 216f/255f, 0/255f);
     Color badColor = new Color(240f/255f, 16f/255f, 16f/255f);
 
+    float readyTimer = 2f;
+    float readyTimerMax = 1f;
+    string[] readyStrings = {"3", "2", "1", "GO"};
+    int readyIndex = 0;
+
     void Awake()
     {
         audioManager = this.GetComponent<AudioManager>();
@@ -101,7 +112,33 @@ public class GameSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GetReady();
         PlayGame();
+    }
+
+    void GetReady()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.GetReady)
+            return;
+
+        readyTimer -= Time.deltaTime;
+        if (readyTimer <= 0)
+        {
+            readyIndex++;
+
+            if (readyIndex < readyStrings.Length)
+            {
+                ReadyText.text = readyStrings[readyIndex];
+                ReadyRearText.text = readyStrings[readyIndex];
+                readyTimer = readyTimerMax;
+            }
+            else
+            {
+                Ready.SetActive(false);
+                Globals.CurrentGameState = Globals.GameStates.Playing;
+                audioManager.StartMusic();
+            }
+        }
     }
 
     void PlayGame()
@@ -145,9 +182,13 @@ public class GameSceneManager : MonoBehaviour
         {
             IntroText.GetComponent<TextMeshProUGUI>().text = "";
             NextButton.GetComponent<MoveNormal>().MoveDown();
-            Globals.CurrentGameState = Globals.GameStates.Playing;
+            Ready.SetActive(true);
+            readyIndex = 0;
+            readyTimer = readyTimerMax;
+            ReadyText.text = readyStrings[readyIndex];
+            ReadyRearText.text = readyStrings[readyIndex];
+            Globals.CurrentGameState = Globals.GameStates.GetReady;
             Level.GetComponent<MoveNormal>().MoveUp();
-            audioManager.StartMusic();
         }
     }
 

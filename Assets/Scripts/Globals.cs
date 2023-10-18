@@ -8,6 +8,7 @@ public class Globals
 
     public enum GameStates {
         Title,
+        GetReady,
         Playing,
         Stats,
     }
