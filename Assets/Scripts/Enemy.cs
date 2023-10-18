@@ -9,18 +9,6 @@ public class Enemy : MonoBehaviour
 
     public GameObject[] Sprites;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ConfigureEnemy(Globals.Orientations orientation)
     {
         if (orientation == Globals.Orientations.Down || orientation == Globals.Orientations.Up)
@@ -30,7 +18,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Type = (Globals.EnemyTypes)Random.Range(0, 8);
+            Type = (Globals.EnemyTypes)Random.Range(0, 9);
             if (orientation == Globals.Orientations.Left)
             {
                 StartPosition = Globals.StartPositions.Left;
