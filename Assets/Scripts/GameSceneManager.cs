@@ -375,6 +375,7 @@ public class GameSceneManager : MonoBehaviour
             }
             else 
             {
+                audioManager.PlayBadInputSound();
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, badColor, .15f, .3f));
                 if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                 RateCoroutine = StartCoroutine(ShowRate("WRONG", badColor));
@@ -388,6 +389,7 @@ public class GameSceneManager : MonoBehaviour
         }
         else
         {
+            audioManager.PlayBadInputSound();
             if (RateCoroutine != null) StopCoroutine(RateCoroutine);
             RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
             combo = 0;
@@ -429,6 +431,7 @@ public class GameSceneManager : MonoBehaviour
         }
         if (deleteFirst)
         {
+            audioManager.PlayBadInputSound();
             if (RateCoroutine != null) StopCoroutine(RateCoroutine);
             RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
             combo = 0;

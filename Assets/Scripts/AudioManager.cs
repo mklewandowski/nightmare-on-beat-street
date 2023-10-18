@@ -22,6 +22,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     AudioClip HitPlayerSound;
     [SerializeField]
+    AudioClip BadInputSound;
+    [SerializeField]
     AudioClip[] HitEnemySounds = new AudioClip[4];
 
     [SerializeField]
@@ -80,6 +82,12 @@ public class AudioManager : MonoBehaviour
     {
         if (Globals.AudioOn)
             audioSource.PlayOneShot(HitPlayerSound, 1f);   
+    }
+
+    public void PlayBadInputSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(BadInputSound, 1f);   
     }
     
     public void PlayClickSound()
