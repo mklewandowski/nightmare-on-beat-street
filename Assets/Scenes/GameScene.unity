@@ -754,6 +754,8 @@ MonoBehaviour:
   EnemyContainer: {fileID: 538994943}
   LifeBar: {fileID: 1590281040}
   GameTime: {fileID: 1766544972}
+  BloodPrefab: {fileID: 1400289319760674327, guid: 1a39ac071e222c74298dc6b36400c3f4, type: 3}
+  AttackPrefab: {fileID: 9063041059167039370, guid: 0ce0569980e4ffe49bcb7453d93731e5, type: 3}
 --- !u!1 &456319184
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,6 +2578,7 @@ MonoBehaviour:
   - {fileID: 1375623297, guid: a3981f13c06e6f045a8461ade7230274, type: 3}
   - {fileID: -310970311, guid: a3981f13c06e6f045a8461ade7230274, type: 3}
   frameRate: 0.24
+  destroyOnLast: 0
 --- !u!114 &1197683617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4015,6 +4018,7 @@ MonoBehaviour:
   - {fileID: -203600025, guid: b53a18a1cd019c540a88680c0b1178c5, type: 3}
   - {fileID: -920424039, guid: b53a18a1cd019c540a88680c0b1178c5, type: 3}
   frameRate: 0.3
+  destroyOnLast: 0
 --- !u!114 &1920949314
 MonoBehaviour:
   m_ObjectHideFlags: 0

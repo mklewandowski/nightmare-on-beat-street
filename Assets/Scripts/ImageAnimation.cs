@@ -10,11 +10,14 @@ public class ImageAnimation : MonoBehaviour
 
     [SerializeField]
     float frameRate = .067f;
-
+    [SerializeField]
+    bool destroyOnLast = false;
     int currFrame = 0;
     float currTime = 0f;
 
     Image image;
+
+    bool lastReached;
 
     void Start()
     {
@@ -28,7 +31,14 @@ public class ImageAnimation : MonoBehaviour
         {
             currTime += Time.deltaTime;
             currFrame = (int)Mathf.Floor(currTime / frameRate) % AnimationFrames.Length;
+            if (destroyOnLast && lastReached && currFrame == 0)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
             image.sprite = AnimationFrames[currFrame];
+            if (currFrame == AnimationFrames.Length - 1)
+                lastReached = true;
         }
     }
 }

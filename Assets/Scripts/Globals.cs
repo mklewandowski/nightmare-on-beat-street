@@ -37,12 +37,12 @@ public class Globals
         Spider,
         Eye,
         Bird,
-        ZombieLady,
-        ZombieMan,
         ZombieRun,
         Ghost,
         Pumpkin,
-        Robot
+        Robot,
+        ZombieLady,
+        ZombieMan,
     }
     
 }

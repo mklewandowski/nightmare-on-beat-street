@@ -57,6 +57,11 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI GameTime;
 
+    [SerializeField]
+    GameObject BloodPrefab;
+    [SerializeField]
+    GameObject AttackPrefab;
+
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
@@ -212,6 +217,7 @@ public class GameSceneManager : MonoBehaviour
                         ShowCombo();
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
+                AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition);
                 Destroy(Enemies[0]);
                 Enemies.RemoveAt(0);
             }
@@ -235,6 +241,14 @@ public class GameSceneManager : MonoBehaviour
             combo = 0;
             HideCombo();
         }
+    }
+
+    void AttackEnemy(Vector2 pos)
+    {
+        GameObject aGO = Instantiate(AttackPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+        aGO.GetComponent<RectTransform>().anchoredPosition = pos;
+        GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+        bGO.GetComponent<RectTransform>().anchoredPosition = pos;
     }
 
     void MoveRows()
