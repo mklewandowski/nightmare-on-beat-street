@@ -27,5 +27,22 @@ public class Globals
         Great,
         Perfect
     }
+    public enum StartPositions {
+        Above,
+        Left,
+        Right
+    }
+    public enum EnemyTypes {
+        Blob,
+        Spider,
+        Eye,
+        Bird,
+        ZombieLady,
+        ZombieMan,
+        ZombieRun,
+        Ghost,
+        Pumpkin,
+        Robot
+    }
     
 }

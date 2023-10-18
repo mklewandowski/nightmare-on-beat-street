@@ -21,7 +21,7 @@ public class GameSceneManager : MonoBehaviour
     string[] introText = {
         "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
         "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
-        "And now it's just you. And you must DANCE. It's the only things that keeps them away... that keeps YOU alive."
+        "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
     };
     int introIndex = 0;
 
@@ -47,9 +47,18 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI ComboText;
     [SerializeField]
     TextMeshProUGUI ComboRearText;
+
+    [SerializeField]
+    GameObject EnemyPrefab;
+    [SerializeField]
+    GameObject EnemyContainer;
+
     List<GameObject> Rows = new List<GameObject>();
+    List<GameObject> Enemies = new List<GameObject>();
+    List<GameObject> EnemiesMissed = new List<GameObject>();
+
     float rowTimer = 0;
-    float rowTimerMax = 2f;
+    float rowTimerMax = 1f;
     float inGoodThreshold = -60f;
     float inGreatThreshold = -47f;
     float inPerfectThreshold = -34f;
@@ -84,6 +93,7 @@ public class GameSceneManager : MonoBehaviour
             return;
         HandleInput();
         MoveRows();
+        MoveEnemies();
         HandleRowCreation();
     }
 
@@ -117,7 +127,7 @@ public class GameSceneManager : MonoBehaviour
             IntroText.GetComponent<TextMeshProUGUI>().text = "";
             NextButton.GetComponent<MoveNormal>().MoveDown();
             Globals.CurrentGameState = Globals.GameStates.Playing;
-            Level.GetComponent<MoveNormal>().MoveDown();
+            Level.GetComponent<MoveNormal>().MoveUp();
             audioManager.StartMusic();
         }
     }
@@ -189,6 +199,8 @@ public class GameSceneManager : MonoBehaviour
                         ShowCombo();
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
+                Destroy(Enemies[0]);
+                Enemies.RemoveAt(0);
             }
             else 
             {
@@ -197,6 +209,8 @@ public class GameSceneManager : MonoBehaviour
                 RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
                 combo = 0;
                 HideCombo();
+                EnemiesMissed.Add(Enemies[0]);
+                Enemies.RemoveAt(0);
             }
             Destroy(Rows[0]);
             Rows.RemoveAt(0);
@@ -209,7 +223,6 @@ public class GameSceneManager : MonoBehaviour
             HideCombo();
         }
     }
-
 
     void MoveRows()
     {
@@ -242,7 +255,70 @@ public class GameSceneManager : MonoBehaviour
             // RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
             Destroy(Rows[0]);
             Rows.RemoveAt(0);
+
+            EnemiesMissed.Add(Enemies[0]);
+            Enemies.RemoveAt(0);
         }
+    }
+
+    void MoveEnemies()
+    {
+        bool deleteFirst = false;
+        foreach (GameObject e in Enemies)
+        {
+            float xSpeed = 0;
+            float ySpeed = -60f;
+            Enemy enemy = e.GetComponent<Enemy>();
+            if (enemy.StartPosition == Globals.StartPositions.Left)
+            {
+                ySpeed = 0;
+                xSpeed = 60f;
+            }
+            else if (enemy.StartPosition == Globals.StartPositions.Right)
+            {
+                ySpeed = 0;
+                xSpeed = -60f;
+            }
+            e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
+        }
+
+        foreach (GameObject e in EnemiesMissed)
+        {
+            float xSpeed = 0;
+            float ySpeed = -60f;
+            Enemy enemy = e.GetComponent<Enemy>();
+            if (enemy.StartPosition == Globals.StartPositions.Left)
+            {
+                ySpeed = 0;
+                xSpeed = 60f;
+                if (Mathf.Abs(e.transform.localPosition.x) < 10f)
+                    deleteFirst = true;
+            }
+            else if (enemy.StartPosition == Globals.StartPositions.Right)
+            {
+                ySpeed = 0;
+                xSpeed = -60f;
+                if (Mathf.Abs(e.transform.localPosition.x) < 10f)
+                    deleteFirst = true;
+            }
+            else
+            {
+                if (e.transform.localPosition.y < 70f)
+                    deleteFirst = true;
+            }
+            e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
+        }
+        if (deleteFirst)
+        {
+            Destroy(EnemiesMissed[0]);
+            EnemiesMissed.RemoveAt(0);
+            HitPlayer();
+        }
+    }
+
+    void HitPlayer()
+    {
+
     }
 
     public void HandleRowCreation()
@@ -268,7 +344,26 @@ public class GameSceneManager : MonoBehaviour
             row.GetComponent<Row>().SetArrow(newOrientation);
             row.GetComponent<Row>().Orientation = newOrientation;
             Rows.Add(row);
+            CreateEnemy(newOrientation);
+
         }
+    }
+
+    void CreateEnemy(Globals.Orientations newOrientation)
+    {
+        GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+        RectTransform rt = enemy.GetComponent<RectTransform>();
+        float newY = 210f;
+        if (newOrientation == Globals.Orientations.Left || newOrientation == Globals.Orientations.Right)
+            newY = 60f;
+        float newX = 0f;
+        if (newOrientation == Globals.Orientations.Left)
+            newX = -150f;
+        else if (newOrientation == Globals.Orientations.Right)
+            newX = 150f;
+        rt.anchoredPosition = new Vector2(newX, newY);
+        enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
+        Enemies.Add(enemy);
     }
 
     IEnumerator ShowHighlight(Globals.Orientations o, Color c, float inTime, float outTime)
