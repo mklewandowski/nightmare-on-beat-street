@@ -18,10 +18,13 @@ public class GameSceneManager : MonoBehaviour
     GameObject NextButton;
     [SerializeField]
     TextMeshProUGUI NextButtonText;
+    // string[] introText = {
+    //     "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
+    //     "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
+    //     "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
+    // };
     string[] introText = {
-        "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
-        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... creatures appeared... dark, ghoulish creatures. They took your friends. Ripped at them, tore at them, devoured them.", 
-        "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
+        "start"
     };
     int introIndex = 0;
 
@@ -153,12 +156,15 @@ public class GameSceneManager : MonoBehaviour
         if (readyTimer <= 0)
         {
             readyIndex++;
-
             if (readyIndex < readyStrings.Length)
             {
                 ReadyText.text = readyStrings[readyIndex];
                 ReadyRearText.text = readyStrings[readyIndex];
                 readyTimer = readyTimerMax;
+                if (readyIndex < readyStrings.Length - 1)
+                    audioManager.PlayCountdownSound();
+                else
+                    audioManager.PlayStartSound();
             }
             else
             {
@@ -213,6 +219,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void SelectPlayAgainButton()
     {
+        audioManager.PlayButtonSound();
         SummaryText.GetComponent<TextMeshProUGUI>().text = "";
         SummaryBestScore.SetActive(false);
         SummaryScore.SetActive(false);
@@ -362,6 +369,7 @@ public class GameSceneManager : MonoBehaviour
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition);
                 Destroy(Enemies[0]);
                 Enemies.RemoveAt(0);
+                audioManager.PlayHitEnemySound();
             }
             else 
             {
@@ -489,6 +497,7 @@ public class GameSceneManager : MonoBehaviour
 
     void HitPlayer()
     {
+        audioManager.PlayHitPlayerSound();
         life--;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
@@ -505,6 +514,7 @@ public class GameSceneManager : MonoBehaviour
         gameOverTimer = gameOverTimerMax;
         Globals.CurrentGameState = Globals.GameStates.GameOver;
         audioManager.StopMusic();
+        audioManager.PlayHitPlayerSound();
         GameOver.transform.localScale = new Vector3(.1f, .1f, .1f);
         GameOver.SetActive(true);
         GameOver.GetComponent<GrowAndShrink>().StartEffect();

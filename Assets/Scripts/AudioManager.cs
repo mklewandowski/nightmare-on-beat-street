@@ -16,6 +16,15 @@ public class AudioManager : MonoBehaviour
     AudioClip CompleteSound;
 
     [SerializeField]
+    AudioClip CountdownSound;
+    [SerializeField]
+    AudioClip StartSound;
+    [SerializeField]
+    AudioClip HitPlayerSound;
+    [SerializeField]
+    AudioClip[] HitEnemySounds = new AudioClip[4];
+
+    [SerializeField]
     AudioClip GameMusic;
     [SerializeField]
     AudioClip[] ClickSounds = new AudioClip[4];
@@ -54,10 +63,34 @@ public class AudioManager : MonoBehaviour
         if (Globals.AudioOn)
             audioSource.PlayOneShot(CompleteSound, 1f);   
     }
+
+    public void PlayCountdownSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(CountdownSound, 1f);   
+    }
+
+    public void PlayStartSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(StartSound, 1f);   
+    }
+
+    public void PlayHitPlayerSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(HitPlayerSound, 1f);   
+    }
     
     public void PlayClickSound()
     {
         int num = Random.Range(0, ClickSounds.Length - 1);
         audioSource.PlayOneShot(ClickSounds[num], .5f);
+    }
+
+    public void PlayHitEnemySound()
+    {
+        int num = Random.Range(0, HitEnemySounds.Length - 1);
+        audioSource.PlayOneShot(HitEnemySounds[num], 1f);
     }
 }
