@@ -24,6 +24,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     AudioClip DeathSound;
     [SerializeField]
+    AudioClip AddHitPointsSound;
+    [SerializeField]
+    AudioClip ClearAllSound;
+    [SerializeField]
     AudioClip BadInputSound;
     [SerializeField]
     AudioClip[] HitEnemySounds = new AudioClip[4];
@@ -96,6 +100,18 @@ public class AudioManager : MonoBehaviour
     {
         if (Globals.AudioOn)
             audioSource.PlayOneShot(DeathSound, .7f);   
+    }
+
+    public void PlayAddHitPointSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(AddHitPointsSound, 1f);   
+    }
+
+    public void PlayClearAllSound()
+    {
+        if (Globals.AudioOn)
+            audioSource.PlayOneShot(ClearAllSound, 1f);   
     }
     
     public void PlayClickSound()

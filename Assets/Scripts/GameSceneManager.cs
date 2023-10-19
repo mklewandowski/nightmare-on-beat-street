@@ -81,11 +81,15 @@ public class GameSceneManager : MonoBehaviour
     GameObject HitPointPlus;
     [SerializeField]
     GameObject KillAllEnemies;
+    [SerializeField]
+    GameObject Explosion;
 
     [SerializeField]
     GameObject EnemyPrefab;
     [SerializeField]
     GameObject EnemyContainer;
+   [SerializeField]
+    GameObject LifeBarContainer;
     [SerializeField]
     GameObject LifeBar;
     [SerializeField]
@@ -761,23 +765,27 @@ public class GameSceneManager : MonoBehaviour
 
     void AddHitPoints()
     {
+        audioManager.PlayAddHitPointSound();
         life++;
         if (life > 4)
             life = 4;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
+        LifeBarContainer.GetComponent<GrowAndShrink>().StartEffect();
         StartCoroutine(ShowHitPointsPlus());
     }
 
     void ClearEnemies()
     {
+        Explosion.GetComponent<GrowAndShrink>().StartEffect();
+        audioManager.PlayClearAllSound();
         ClearArrowsAndEnemies();
         StartCoroutine(ShowKillAllEnemies());
     }
 
     IEnumerator ShowKillAllEnemies()
     {
-        float maxTime = 1.5f;
+        float maxTime = 1f;
         KillAllEnemies.transform.localScale = new Vector3(.1f, .1f, .1f);
         KillAllEnemies.SetActive(true);
         KillAllEnemies.GetComponent<GrowAndShrink>().StartEffect();
@@ -791,7 +799,7 @@ public class GameSceneManager : MonoBehaviour
 
     IEnumerator ShowHitPointsPlus()
     {
-        float maxTime = 1.5f;
+        float maxTime = 1f;
         HitPointPlus.transform.localScale = new Vector3(.1f, .1f, .1f);
         HitPointPlus.SetActive(true);
         HitPointPlus.GetComponent<GrowAndShrink>().StartEffect();
