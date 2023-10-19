@@ -71,6 +71,12 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI ComboText;
     [SerializeField]
     TextMeshProUGUI ComboRearText;
+    [SerializeField]
+    GameObject PerfectCombo;
+    [SerializeField]
+    TextMeshProUGUI PerfectComboText;
+    [SerializeField]
+    TextMeshProUGUI PerfectComboRearText;
 
     [SerializeField]
     GameObject EnemyPrefab;
@@ -109,6 +115,7 @@ public class GameSceneManager : MonoBehaviour
     float inPerfectThreshold = -44f;
     float destroyThreshold = -37f;
     int combo = 0;
+    int perfectCombo = 0;
     int life = 4;
     float lifebarMaxWidth = 43f;
     int maxLife = 4;
@@ -365,16 +372,22 @@ public class GameSceneManager : MonoBehaviour
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GOOD", goodColor));
                     AddScore(5);
-                    combo = 0;
-                    HideCombo();
+                    combo++;
+                    if (combo > 1)
+                        ShowCombo();
+                    perfectCombo = 0;
+                    HidePerfectCombo();
                 }
                 else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Great)
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GREAT", goodColor));
                     AddScore(10);
-                    combo = 0;
-                    HideCombo();
+                    combo++;
+                    if (combo > 1)
+                        ShowCombo();
+                    perfectCombo = 0;
+                    HidePerfectCombo();
                 }
                 else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Perfect)
                 {
@@ -382,8 +395,11 @@ public class GameSceneManager : MonoBehaviour
                     RateCoroutine = StartCoroutine(ShowRate("PERFECT", goodColor));
                     AddScore(20);
                     combo++;
+                    perfectCombo++;
                     if (combo > 1)
                         ShowCombo();
+                    if (perfectCombo > 1)
+                        ShowPerfectCombo();
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
@@ -399,6 +415,8 @@ public class GameSceneManager : MonoBehaviour
                 RateCoroutine = StartCoroutine(ShowRate("WRONG", badColor));
                 combo = 0;
                 HideCombo();
+                perfectCombo = 0;
+                HidePerfectCombo();
                 EnemiesMissed.Add(Enemies[0]);
                 Enemies.RemoveAt(0);
             }
@@ -412,6 +430,8 @@ public class GameSceneManager : MonoBehaviour
             RateCoroutine = StartCoroutine(ShowRate("OOPS", badColor));
             combo = 0;
             HideCombo();
+            perfectCombo = 0;
+            HidePerfectCombo();
         }
     }
 
@@ -458,6 +478,8 @@ public class GameSceneManager : MonoBehaviour
             RateCoroutine = StartCoroutine(ShowRate("MISS", badColor));
             combo = 0;
             HideCombo();
+            perfectCombo = 0;
+            HidePerfectCombo();
 
             Destroy(Rows[0]);
             Rows.RemoveAt(0);
@@ -702,6 +724,20 @@ public class GameSceneManager : MonoBehaviour
     void HideCombo()
     {
         Combo.SetActive(false);
+    }
+
+    void ShowPerfectCombo()
+    {
+        PerfectComboText.text = perfectCombo.ToString();
+        PerfectComboRearText.text = perfectCombo.ToString();
+        PerfectCombo.transform.localScale = new Vector3(.1f, .1f, .1f);
+        PerfectCombo.SetActive(true);
+        PerfectCombo.GetComponent<GrowAndShrink>().StartEffect();
+    }
+
+    void HidePerfectCombo()
+    {
+        PerfectCombo.SetActive(false);
     }
 
 }
