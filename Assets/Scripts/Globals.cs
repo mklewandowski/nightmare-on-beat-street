@@ -46,6 +46,8 @@ public class Globals
         Pumpkin,
         ZombieLadyRun,
         Robot,
+        Drag,
+        ZombieRun2
     }
 
     public static void SaveIntToPlayerPrefs(string key, int val)
