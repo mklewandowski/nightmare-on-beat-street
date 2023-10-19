@@ -1198,7 +1198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: a horror rhythm game by the realmattkain
+  m_text: a horror rhythm game by therealmattkain
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a3fab6e458fd18e4e8ef08e2c4e9ff2b, type: 2}
   m_sharedMaterial: {fileID: -7309626129983707151, guid: a3fab6e458fd18e4e8ef08e2c4e9ff2b, type: 2}
