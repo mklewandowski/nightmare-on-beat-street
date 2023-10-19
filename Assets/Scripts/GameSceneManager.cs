@@ -50,6 +50,8 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     GameObject Player;
     [SerializeField]
+    GameObject PlayerShadow;
+    [SerializeField]
     GameObject[] Highlights;
     [SerializeField]
     GameObject[] Glows;
@@ -173,6 +175,7 @@ public class GameSceneManager : MonoBehaviour
             {
                 Ready.SetActive(false);
                 Globals.CurrentGameState = Globals.GameStates.Playing;
+                Player.GetComponent<Player>().SetDance();
                 audioManager.StartMusic();
             }
         }
@@ -291,7 +294,9 @@ public class GameSceneManager : MonoBehaviour
         ReadyText.text = readyStrings[readyIndex];
         ReadyRearText.text = readyStrings[readyIndex];
         Globals.CurrentGameState = Globals.GameStates.GetReady;
+        Player.GetComponent<Player>().SetIdle();
         Player.SetActive(true);
+        PlayerShadow.SetActive(true);
         life = maxLife;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
@@ -302,6 +307,7 @@ public class GameSceneManager : MonoBehaviour
         GameOver.SetActive(false);
         rowSpeed = 100f;
         enemySpeed = 60f;
+        rowTimerMax = 1f;
         speedTimer = maxSpeedTimer;
         Level.GetComponent<MoveNormal>().MoveUp();
     }
@@ -545,6 +551,7 @@ public class GameSceneManager : MonoBehaviour
         GameOver.SetActive(true);
         GameOver.GetComponent<GrowAndShrink>().StartEffect();
         Player.SetActive(false);
+        PlayerShadow.SetActive(false);
 
         foreach (GameObject e in Enemies)
         {
@@ -627,7 +634,7 @@ public class GameSceneManager : MonoBehaviour
         RectTransform rt = enemy.GetComponent<RectTransform>();
         float newY = 210f;
         if (newOrientation == Globals.Orientations.Left || newOrientation == Globals.Orientations.Right)
-            newY = 60f;
+            newY = 50f;
         float newX = 0f;
         if (newOrientation == Globals.Orientations.Left)
             newX = -150f;
