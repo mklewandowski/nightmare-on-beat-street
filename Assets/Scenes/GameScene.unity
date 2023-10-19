@@ -5973,6 +5973,7 @@ MonoBehaviour:
   - {fileID: -1262775168, guid: b53a18a1cd019c540a88680c0b1178c5, type: 3}
   - {fileID: 1641209731, guid: b53a18a1cd019c540a88680c0b1178c5, type: 3}
   frameRate: 0.3
+  FlashMaterial: {fileID: 2100000, guid: a87d5cc3d9c48fd48bb6d4a7265f6003, type: 2}
 --- !u!1 &1942748414
 GameObject:
   m_ObjectHideFlags: 0

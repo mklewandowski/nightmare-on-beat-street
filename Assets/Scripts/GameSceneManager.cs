@@ -535,6 +535,8 @@ public class GameSceneManager : MonoBehaviour
         GameObject bGO = Instantiate(BloodPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
         bGO.GetComponent<RectTransform>().anchoredPosition = Player.GetComponent<RectTransform>().anchoredPosition;
 
+        Player.GetComponent<Player>().Hit();
+
         if (life == 0)
             EndGame();
     }

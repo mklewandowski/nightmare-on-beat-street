@@ -21,9 +21,16 @@ public class Player : MonoBehaviour
 
     Image image;
 
+    [SerializeField]
+    Material FlashMaterial;
+    Material playerMaterial;
+    float flashTimer = 0f;
+    float flashTimerMax = .15f;
+
     void Start()
     {
         image = this.GetComponent<Image>();
+        playerMaterial = image.material;
     }
 
     // Update is called once per frame
@@ -46,6 +53,19 @@ public class Player : MonoBehaviour
                 image.sprite = DanceFrames[currFrame];
             }
         }
+        HandleFlash();
+    }
+
+    private void HandleFlash()
+    {
+        if (flashTimer > 0)
+        {
+            flashTimer -= Time.deltaTime;
+            if (flashTimer <= 0)
+            {
+                image.material = playerMaterial;
+            }
+        }
     }
 
     public void SetIdle ()
@@ -56,5 +76,11 @@ public class Player : MonoBehaviour
     public void SetDance()
     {
         isIdle = false;
+    }
+
+    public void Hit()
+    {
+        image.material = FlashMaterial;
+        flashTimer = flashTimerMax;
     }
 }
