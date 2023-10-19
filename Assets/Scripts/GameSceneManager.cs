@@ -772,6 +772,7 @@ public class GameSceneManager : MonoBehaviour
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
         LifeBarContainer.GetComponent<GrowAndShrink>().StartEffect();
+        AddScore(100);
         StartCoroutine(ShowHitPointsPlus());
     }
 
@@ -780,6 +781,7 @@ public class GameSceneManager : MonoBehaviour
         Explosion.GetComponent<GrowAndShrink>().StartEffect();
         audioManager.PlayClearAllSound();
         ClearArrowsAndEnemies();
+        AddScore(100);
         StartCoroutine(ShowKillAllEnemies());
     }
 
