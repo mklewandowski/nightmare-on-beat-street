@@ -121,7 +121,7 @@ public class GameSceneManager : MonoBehaviour
     float inGoodThreshold = -70f;
     float inGreatThreshold = -57f;
     float inPerfectThreshold = -44f;
-    float destroyThreshold = -37f;
+    float destroyThreshold = -36f;
     int combo = 0;
     int perfectCombo = 0;
     int addHitPointThreshold = 6;
