@@ -77,6 +77,10 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI PerfectComboText;
     [SerializeField]
     TextMeshProUGUI PerfectComboRearText;
+    [SerializeField]
+    GameObject HitPointPlus;
+    [SerializeField]
+    GameObject KillAllEnemies;
 
     [SerializeField]
     GameObject EnemyPrefab;
@@ -116,6 +120,8 @@ public class GameSceneManager : MonoBehaviour
     float destroyThreshold = -37f;
     int combo = 0;
     int perfectCombo = 0;
+    int addHitPointThreshold = 6;
+    int killAllThreshold = 20;
     int life = 4;
     float lifebarMaxWidth = 43f;
     int maxLife = 4;
@@ -400,12 +406,16 @@ public class GameSceneManager : MonoBehaviour
                         ShowCombo();
                     if (perfectCombo > 1)
                         ShowPerfectCombo();
+                    if (perfectCombo > 0 && perfectCombo % addHitPointThreshold == 0)
+                    {
+                        AddHitPoints();
+                    }
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
                 Destroy(Enemies[0]);
                 Enemies.RemoveAt(0);
-                audioManager.PlayHitEnemySound();
+                audioManager.PlayHitEnemySound();            
             }
             else 
             {
@@ -422,6 +432,11 @@ public class GameSceneManager : MonoBehaviour
             }
             Destroy(Rows[0]);
             Rows.RemoveAt(0);
+
+            if (combo > 0 && combo % killAllThreshold == 0)
+            {
+                ClearEnemies();
+            }    
         }
         else
         {
@@ -576,7 +591,11 @@ public class GameSceneManager : MonoBehaviour
         GameOver.GetComponent<GrowAndShrink>().StartEffect();
         Player.SetActive(false);
         PlayerShadow.SetActive(false);
+        ClearArrowsAndEnemies();
+    }
 
+    void ClearArrowsAndEnemies()
+    {
         foreach (GameObject e in Enemies)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
@@ -738,6 +757,50 @@ public class GameSceneManager : MonoBehaviour
     void HidePerfectCombo()
     {
         PerfectCombo.SetActive(false);
+    }
+
+    void AddHitPoints()
+    {
+        life++;
+        if (life > 4)
+            life = 4;
+        float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
+        LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
+        StartCoroutine(ShowHitPointsPlus());
+    }
+
+    void ClearEnemies()
+    {
+        ClearArrowsAndEnemies();
+        StartCoroutine(ShowKillAllEnemies());
+    }
+
+    IEnumerator ShowKillAllEnemies()
+    {
+        float maxTime = 1.5f;
+        KillAllEnemies.transform.localScale = new Vector3(.1f, .1f, .1f);
+        KillAllEnemies.SetActive(true);
+        KillAllEnemies.GetComponent<GrowAndShrink>().StartEffect();
+        while (maxTime >= 0.0f) 
+        {
+            maxTime -= Time.deltaTime;
+            yield return null; 
+        }
+        KillAllEnemies.SetActive(false);
+    }
+
+    IEnumerator ShowHitPointsPlus()
+    {
+        float maxTime = 1.5f;
+        HitPointPlus.transform.localScale = new Vector3(.1f, .1f, .1f);
+        HitPointPlus.SetActive(true);
+        HitPointPlus.GetComponent<GrowAndShrink>().StartEffect();
+        while (maxTime >= 0.0f) 
+        {
+            maxTime -= Time.deltaTime;
+            yield return null; 
+        }
+        HitPointPlus.SetActive(false);
     }
 
 }
