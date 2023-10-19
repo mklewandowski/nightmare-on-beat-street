@@ -249,7 +249,7 @@ public class GameSceneManager : MonoBehaviour
         else if (Globals.CurrentGameState == Globals.GameStates.Summary)
         {
             TryAgainButton.GetComponent<MoveNormal>().MoveUp();
-            SummaryScoreText.text = "SCORE:" + gameScore.ToString();
+            SummaryScoreText.text = gameScore.ToString();
             SummaryScoreRearText.text = SummaryScoreText.text;
             SummaryScore.transform.localScale = new Vector3(.1f, .1f, .1f);
             SummaryScore.SetActive(true);
@@ -261,7 +261,7 @@ public class GameSceneManager : MonoBehaviour
                 Globals.SaveIntToPlayerPrefs(Globals.BestScorePlayerPrefsKey, Globals.BestScore);
             }
 
-            SummaryBestScoreText.text = "BEST SCORE:" + Globals.BestScore.ToString();
+            SummaryBestScoreText.text = Globals.BestScore.ToString();
             SummaryBestScoreRearText.text = SummaryBestScoreText.text;
             SummaryBestScore.transform.localScale = new Vector3(.1f, .1f, .1f);
             SummaryBestScore.SetActive(true);
