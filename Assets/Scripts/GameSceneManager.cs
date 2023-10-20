@@ -111,6 +111,11 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI ReadyRearText;
     [SerializeField]
     GameObject GameOver;
+    [SerializeField]
+    GameObject MobileButtons;
+    [SerializeField]
+    TextMeshProUGUI MobileToggleButtonText;
+    bool showMobileButtons = true;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -811,6 +816,13 @@ public class GameSceneManager : MonoBehaviour
             yield return null; 
         }
         HitPointPlus.SetActive(false);
+    }
+
+    public void ToggleMobileButtons()
+    {
+        showMobileButtons = !showMobileButtons;
+        MobileButtons.SetActive(true);
+        MobileToggleButtonText.text = showMobileButtons ? "mobile buttons: ON" : "mobile buttons: OFF";
     }
 
 }
