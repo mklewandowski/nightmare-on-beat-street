@@ -1405,7 +1405,7 @@ MonoBehaviour:
   HitPlayerSound: {fileID: 8300000, guid: d2954c26a2509064bbbe36f3299dd7e3, type: 3}
   DeathSound: {fileID: 8300000, guid: 4e706f17821a1b64596f1c43ce776122, type: 3}
   AddHitPointsSound: {fileID: 8300000, guid: 322946a7f2cc41c46bd5645a636097a9, type: 3}
-  ClearAllSound: {fileID: 8300000, guid: f25bbb1bc1d106b4b844e991789090a8, type: 3}
+  ClearAllSound: {fileID: 8300000, guid: 3077622c71bb9714c986390344ddec06, type: 3}
   BadInputSound: {fileID: 8300000, guid: 46f601ceb7c45b340aaa1aeed23515a6, type: 3}
   HitEnemySounds:
   - {fileID: 8300000, guid: c4b7f2d9e1fe036478f9f17a034cbcba, type: 3}
@@ -3568,7 +3568,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4280377837
-  m_fontColor: {r: 0.92941177, g: 0.38039216, b: 0.12941177, a: 1}
+  m_fontColor: {r: 0, g: 0.5803922, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4208,7 +4208,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BOOM!
+  m_text: ZAP!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a8e9af6faee85f489893c70687ee465, type: 2}
   m_sharedMaterial: {fileID: -6357209280651756952, guid: 2a8e9af6faee85f489893c70687ee465, type: 2}
@@ -5977,7 +5977,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BOOM!
+  m_text: ZAP!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a8e9af6faee85f489893c70687ee465, type: 2}
   m_sharedMaterial: {fileID: -6357209280651756952, guid: 2a8e9af6faee85f489893c70687ee465, type: 2}
@@ -5987,7 +5987,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4280377837
-  m_fontColor: {r: 0.92941177, g: 0.38039216, b: 0.12941177, a: 1}
+  m_fontColor: {r: 0, g: 0.5803922, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6257,7 +6257,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4280377837
-  m_fontColor: {r: 0.92941177, g: 0.38039216, b: 0.12941177, a: 1}
+  m_fontColor: {r: 0, g: 0.5803922, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
