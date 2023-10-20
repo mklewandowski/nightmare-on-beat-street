@@ -37,6 +37,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     AudioClip IntroMusic;
     [SerializeField]
+    AudioClip AmbientSounds;
+    [SerializeField]
     AudioClip[] ClickSounds = new AudioClip[4];
 
     void Awake()
@@ -54,6 +56,11 @@ public class AudioManager : MonoBehaviour
     public void StartIntroMusic()
     {
         audioSource.clip = IntroMusic;
+        audioSource.Play();
+    }
+    public void StartAmbient()
+    {
+        audioSource.clip = AmbientSounds;
         audioSource.Play();
     }
     public void StopMusic()

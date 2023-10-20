@@ -240,6 +240,7 @@ public class GameSceneManager : MonoBehaviour
             summary += results[Random.Range(0, results.Length)];
             SummaryText.GetComponent<TypewriterUI>().StartEffect("", summary);
             Globals.CurrentGameState = Globals.GameStates.Summary;
+            audioManager.StartAmbient();
         }
     }
 
@@ -254,6 +255,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void SelectPlayAgainButton()
     {
+        audioManager.StopMusic();
         audioManager.PlayButtonSound();
         SummaryText.GetComponent<TextMeshProUGUI>().text = "";
         SummaryBestScore.SetActive(false);
