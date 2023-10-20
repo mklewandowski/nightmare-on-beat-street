@@ -33,6 +33,8 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     GameObject TryAgainButton;
     [SerializeField]
+    GameObject HomeButton;
+    [SerializeField]
     GameObject SummaryScore;
     [SerializeField]
     TextMeshProUGUI SummaryScoreText;
@@ -257,7 +259,23 @@ public class GameSceneManager : MonoBehaviour
         SummaryBestScore.SetActive(false);
         SummaryScore.SetActive(false);
         TryAgainButton.GetComponent<MoveNormal>().MoveDown();
+        HomeButton.GetComponent<MoveNormal>().MoveDown();
         StartGetReady();
+    }
+
+    public void SelectHomeButton()
+    {
+        audioManager.PlayButtonSound();
+        audioManager.StartIntroMusic();
+        SummaryText.GetComponent<TextMeshProUGUI>().text = "";
+        SummaryBestScore.SetActive(false);
+        SummaryScore.SetActive(false);
+        TryAgainButton.GetComponent<MoveNormal>().MoveDown();
+        HomeButton.GetComponent<MoveNormal>().MoveDown();
+        Title.GetComponent<MoveNormal>().MoveDown();
+        TitleButtons.GetComponent<MoveNormal>().MoveUp();   
+        introIndex = 0;
+        Globals.CurrentGameState = Globals.GameStates.Title;
     }
 
     public void EndText()
@@ -271,6 +289,7 @@ public class GameSceneManager : MonoBehaviour
         else if (Globals.CurrentGameState == Globals.GameStates.Summary)
         {
             TryAgainButton.GetComponent<MoveNormal>().MoveUp();
+            HomeButton.GetComponent<MoveNormal>().MoveUp();
             SummaryScoreText.text = gameScore.ToString();
             SummaryScoreRearText.text = SummaryScoreText.text;
             SummaryScore.transform.localScale = new Vector3(.1f, .1f, .1f);
