@@ -1533,7 +1533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844213a7877821448a79d9035a999d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuSound: {fileID: 0}
+  MenuSound: {fileID: 8300000, guid: 25f9217c47e3ead4693eeb25ddb3a200, type: 3}
   ButtonSound: {fileID: 8300000, guid: 7abf39552e59b284984a9c33b1d2e4f2, type: 3}
   CompleteSound: {fileID: 8300000, guid: 7abf39552e59b284984a9c33b1d2e4f2, type: 3}
   CountdownSound: {fileID: 8300000, guid: 317a26338ff9ccb48ba0eb5f73695f44, type: 3}

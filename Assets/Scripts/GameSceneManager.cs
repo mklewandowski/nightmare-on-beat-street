@@ -882,6 +882,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void ToggleMobileButtons()
     {
+        audioManager.PlayMenuSound();
         showMobileButtons = !showMobileButtons;
         MobileButtons.SetActive(true);
         MobileToggleButtonText.text = showMobileButtons ? "mobile buttons: ON" : "mobile buttons: OFF";
