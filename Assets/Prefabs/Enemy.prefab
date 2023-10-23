@@ -1,5 +1,103 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &614580029241583544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6340393100577100365}
+  - component: {fileID: 1432987288188127291}
+  - component: {fileID: 1374519551198216234}
+  - component: {fileID: 6155282091183240629}
+  m_Layer: 5
+  m_Name: Headless
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &6340393100577100365
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614580029241583544}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6229055296108323638}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 44, y: 44}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1432987288188127291
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614580029241583544}
+  m_CullTransparentMesh: 1
+--- !u!114 &1374519551198216234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614580029241583544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 546436807, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6155282091183240629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614580029241583544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b7b54b91768b646bb9063e371e7721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationFrames:
+  - {fileID: 546436807, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  - {fileID: -1372748049, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  - {fileID: 515655929, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  - {fileID: -1467822379, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  - {fileID: -972452927, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  - {fileID: -240542155, guid: 25a4be5e39a859a4bb4e29b817c116ec, type: 3}
+  frameRate: 0.12
+  destroyOnLast: 0
 --- !u!1 &3408415816949337066
 GameObject:
   m_ObjectHideFlags: 0
@@ -67,7 +165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -541411178, guid: ccdfb57cca33e2143b26979c1055a692, type: 3}
+  m_Sprite: {fileID: 1356517034, guid: 6ccf8679180d50748824d2d63abe1120, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1095,6 +1193,7 @@ RectTransform:
   - {fileID: 6229055295917498252}
   - {fileID: 3288598253257702389}
   - {fileID: 7346701541566378472}
+  - {fileID: 6340393100577100365}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1129,6 +1228,7 @@ MonoBehaviour:
   - {fileID: 6229055295917498251}
   - {fileID: 5636594810933211818}
   - {fileID: 3408415816949337066}
+  - {fileID: 614580029241583544}
 --- !u!1 &6229055296255855503
 GameObject:
   m_ObjectHideFlags: 0

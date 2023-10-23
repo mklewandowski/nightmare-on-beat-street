@@ -47,7 +47,8 @@ public class Globals
         ZombieLadyRun,
         Robot,
         Drag,
-        ZombieRun2
+        ZombieRun2,
+        ZombieHeadless
     }
 
     public static void SaveIntToPlayerPrefs(string key, int val)

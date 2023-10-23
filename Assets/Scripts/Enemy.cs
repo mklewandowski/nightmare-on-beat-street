@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Type = (Globals.EnemyTypes)Random.Range(0, 11);
+            Type = (Globals.EnemyTypes)Random.Range(0, 12);
             if (orientation == Globals.Orientations.Left)
             {
                 StartPosition = Globals.StartPositions.Left;
