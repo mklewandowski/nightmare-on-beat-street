@@ -20,7 +20,7 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI NextButtonText;
     string[] introText = {
         "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
-        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... foul, ghoulish creatures appeared. They took your friends.", 
+        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... revolting, ghoulish creatures appeared. They took your friends.", 
         "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
     };
     // string[] introText = {
@@ -127,9 +127,9 @@ public class GameSceneManager : MonoBehaviour
     float rowTimer = 0;
     float rowTimerMax = 1f;
     float inGoodThreshold = -70f;
-    float inGreatThreshold = -57f;
-    float inPerfectThreshold = -44f;
-    float destroyThreshold = -36f;
+    float inGreatThreshold = -58f;
+    float inPerfectThreshold = -46f;
+    float destroyThreshold = -34f;
     int combo = 0;
     int perfectCombo = 0;
     int addHitPointThreshold = 6;
@@ -158,6 +158,7 @@ public class GameSceneManager : MonoBehaviour
 
     void Awake()
     {
+        Application.targetFrameRate = 60;
         Globals.BestScore = Globals.LoadIntFromPlayerPrefs(Globals.BestScorePlayerPrefsKey);
         audioManager = this.GetComponent<AudioManager>();
     }
