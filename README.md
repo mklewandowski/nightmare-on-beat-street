@@ -2,7 +2,7 @@
 Nightmare on Beat Street is a horror rhythm game inspired by DDR, Thriller, and '80s horror movies.
 
 ## Gameplay
-![Nightmare on Beat Street gameplay](https://github.com/mklewandowski/ghtmare-on-beat-street/blob/main/Assets/Images/nightmare-gameplay-small.gif?raw=true)
+![Nightmare on Beat Street gameplay](https://github.com/mklewandowski/nightmare-on-beat-street/blob/main/Assets/Images/nightmare-gameplay-small.gif?raw=true)
 
 - Match rhythm arrows to destroy creatures.
 - Score combos to heal and vanquish foes.
