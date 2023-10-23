@@ -674,6 +674,7 @@ public class GameSceneManager : MonoBehaviour
         }
         Enemies.Clear();
         EnemiesMissed.Clear();
+        EnemiesOops.Clear();
         Rows.Clear();
     }
 
