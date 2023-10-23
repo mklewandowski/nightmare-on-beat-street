@@ -7,6 +7,7 @@ public class Globals
     public static bool AudioOn = true;
     public static int BestScore = 0;
     public const string BestScorePlayerPrefsKey = "BestScore";
+    public const string ShowMobileButtonsPlayerPrefsKey = "MobileButtons";
 
     public enum GameStates {
         Title,

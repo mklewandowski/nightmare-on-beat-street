@@ -160,6 +160,9 @@ public class GameSceneManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         Globals.BestScore = Globals.LoadIntFromPlayerPrefs(Globals.BestScorePlayerPrefsKey);
+        int showMobile = Globals.LoadIntFromPlayerPrefs(Globals.ShowMobileButtonsPlayerPrefsKey, 1);
+        showMobileButtons = showMobile == 1;
+        SetMobileButtons();
         audioManager = this.GetComponent<AudioManager>();
     }
 
@@ -891,7 +894,13 @@ public class GameSceneManager : MonoBehaviour
     {
         audioManager.PlayMenuSound();
         showMobileButtons = !showMobileButtons;
-        MobileButtons.SetActive(true);
+        Globals.SaveIntToPlayerPrefs(Globals.ShowMobileButtonsPlayerPrefsKey, showMobileButtons ? 1 : 0);
+        SetMobileButtons();
+    }
+
+    void SetMobileButtons()
+    {
+        MobileButtons.SetActive(showMobileButtons);
         MobileToggleButtonText.text = showMobileButtons ? "mobile buttons: ON" : "mobile buttons: OFF";
     }
 
