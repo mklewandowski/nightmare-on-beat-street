@@ -20,7 +20,7 @@ public class GameSceneManager : MonoBehaviour
     TextMeshProUGUI NextButtonText;
     string[] introText = {
         "\"It's just another Halloween. It's just another dance party,\" you tell yourself as sweat drips from your brow and pain shoots through your legs.",
-        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... dark, ghoulish creatures appeared. They took your friends.", 
+        "How did this start? You were dancing. Everything was normal. Then blistering light... followed by darkness... foul, ghoulish creatures appeared. They took your friends.", 
         "And now it's just you. And you must DANCE. It's the only thing that keeps them away... that keeps YOU alive."
     };
     // string[] introText = {
