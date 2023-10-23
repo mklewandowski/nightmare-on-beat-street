@@ -122,6 +122,7 @@ public class GameSceneManager : MonoBehaviour
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
+    List<GameObject> EnemiesOops = new List<GameObject>();
 
     float rowTimer = 0;
     float rowTimerMax = 1f;
@@ -477,6 +478,7 @@ public class GameSceneManager : MonoBehaviour
             HideCombo();
             perfectCombo = 0;
             HidePerfectCombo();
+            CreateOopsEnemy(inputOrientation);
         }
     }
 
@@ -589,6 +591,26 @@ public class GameSceneManager : MonoBehaviour
             EnemiesMissed.RemoveAt(0);
             HitPlayer();
         }
+
+        deleteFirst = false;
+        foreach (GameObject e in EnemiesOops)
+        {
+            float xSpeed = enemySpeed * -3.5f;
+            float ySpeed = enemySpeed * -3.5f;
+            if (Mathf.Abs(e.transform.localPosition.x) < 10f)
+                deleteFirst = true;
+            if (e.transform.localPosition.y < 70f)
+                deleteFirst = true;
+            e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
+        }
+        if (deleteFirst)
+        {
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesOops[0].GetComponent<RectTransform>().anchoredPosition;
+            Destroy(EnemiesOops[0]);
+            EnemiesOops.RemoveAt(0);
+            HitPlayer();
+        }
     }
 
     void HitPlayer()
@@ -633,6 +655,12 @@ public class GameSceneManager : MonoBehaviour
             Destroy(e);
         }
         foreach (GameObject e in EnemiesMissed)
+        {
+            GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
+            Destroy(e);
+        }
+        foreach (GameObject e in EnemiesOops)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
@@ -716,6 +744,18 @@ public class GameSceneManager : MonoBehaviour
         rt.anchoredPosition = new Vector2(newX, newY);
         enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
         Enemies.Add(enemy);
+    }
+
+    void CreateOopsEnemy(Globals.Orientations newOrientation)
+    {
+        GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+        RectTransform rt = enemy.GetComponent<RectTransform>();
+        float newY = 210f;
+        float newX = 165f;
+        rt.anchoredPosition = new Vector2(newX, newY);
+        enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
+        enemy.GetComponent<Enemy>().SetType(Globals.EnemyTypes.Pumpkin);
+        EnemiesOops.Add(enemy);
     }
 
     IEnumerator ShowHighlight(Globals.Orientations o, Color c, float inTime, float outTime)

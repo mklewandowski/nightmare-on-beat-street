@@ -32,4 +32,13 @@ public class Enemy : MonoBehaviour
             
         Sprites[(int)Type].SetActive(true);
     }
+
+    public void SetType(Globals.EnemyTypes newType)
+    {
+        Sprites[(int)Type].SetActive(false);
+        Type = newType;
+        Sprites[(int)Type].SetActive(true);
+    }
+        
+    
 }
