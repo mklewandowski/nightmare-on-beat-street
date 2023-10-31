@@ -134,9 +134,9 @@ public class GameSceneManager : MonoBehaviour
     int perfectCombo = 0;
     int addHitPointThreshold = 6;
     int killAllThreshold = 20;
-    int life = 4;
+    int life = 6;
     float lifebarMaxWidth = 43f;
-    int maxLife = 4;
+    int maxLife = 6;
     float gameTime = 0;
     float speedTimer = 10f;
     float maxSpeedTimer = 10f;
@@ -844,8 +844,8 @@ public class GameSceneManager : MonoBehaviour
     {
         audioManager.PlayAddHitPointSound();
         life++;
-        if (life > 4)
-            life = 4;
+        if (life > maxLife)
+            life = maxLife;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
         LifeBarContainer.GetComponent<GrowAndShrink>().StartEffect();
