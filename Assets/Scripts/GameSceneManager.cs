@@ -176,9 +176,32 @@ public class GameSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleTitle();
+        HandleIntro();
         GetReady();
         PlayGame();
         ShowGameOver();
+    }
+
+    void HandleTitle()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Title)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            SelectStartButton();
+        }
+    }
+    void HandleIntro()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Intro)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            AdvanceIntro();
+        }
     }
 
     void GetReady()
@@ -262,6 +285,7 @@ public class GameSceneManager : MonoBehaviour
         Title.GetComponent<MoveNormal>().MoveUp();
         TitleButtons.GetComponent<MoveNormal>().MoveDown();   
         IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
+        Globals.CurrentGameState = Globals.GameStates.Intro;
     }
 
     public void SelectPlayAgainButton()
@@ -293,7 +317,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void EndText()
     {
-        if (Globals.CurrentGameState == Globals.GameStates.Title)
+        if (Globals.CurrentGameState == Globals.GameStates.Intro)
         {
             if (introIndex >= introText.Length - 1)
                 NextButtonText.text = "PLAY";

@@ -11,6 +11,7 @@ public class Globals
 
     public enum GameStates {
         Title,
+        Intro,
         GetReady,
         Playing,
         GameOver,
