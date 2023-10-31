@@ -249,7 +249,7 @@ public class GameSceneManager : MonoBehaviour
                 "and then the creatures gouged your eyes and face until you slowly bled to death."
             };
             summary += results[Random.Range(0, results.Length)];
-            SummaryText.GetComponent<TypewriterUI>().StartEffect("", summary);
+            SummaryText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(summary, 25));
             Globals.CurrentGameState = Globals.GameStates.Summary;
             audioManager.StartAmbient();
         }
@@ -261,7 +261,7 @@ public class GameSceneManager : MonoBehaviour
         audioManager.PlayButtonSound();
         Title.GetComponent<MoveNormal>().MoveUp();
         TitleButtons.GetComponent<MoveNormal>().MoveDown();   
-        IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
+        IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
     }
 
     public void SelectPlayAgainButton()
@@ -329,7 +329,7 @@ public class GameSceneManager : MonoBehaviour
         introIndex++;
         if (introIndex < introText.Length)
         {
-            IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
+            IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
             NextButton.GetComponent<MoveNormal>().MoveDown();
         }
         else

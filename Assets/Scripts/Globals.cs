@@ -61,5 +61,29 @@ public class Globals
         int val = PlayerPrefs.GetInt(key, defaultVal);
         return val;
     }
+
+    public static string StringWithBreaks(string text, int charsPerLine)
+    {
+        string modifiedText = "";
+        int charsOnCurrentLine = 0;
+        char[] delimiterChars = {' '};
+        string[] words = text.Split(delimiterChars);
+        for (int index = 0; index < words.Length; index++)
+        {
+            if ((charsOnCurrentLine + words[index].Length) < charsPerLine)
+            {
+                modifiedText = modifiedText + words[index] + " ";
+                //words still fit on current line
+                charsOnCurrentLine += words[index].Length + 1;
+            }
+            else
+            {
+                modifiedText = modifiedText + "\n" + words[index] + " ";
+                //start a new line
+                charsOnCurrentLine = words[index].Length + 1;
+            }
+        }
+        return modifiedText;
+    }
     
 }
