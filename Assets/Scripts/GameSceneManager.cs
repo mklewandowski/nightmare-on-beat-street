@@ -125,7 +125,7 @@ public class GameSceneManager : MonoBehaviour
     List<GameObject> EnemiesOops = new List<GameObject>();
 
     float rowTimer = 0;
-    float rowTimerMax = 1f;
+    float rowTimerMax = 1.2f;
     float inGoodThreshold = -70f;
     float inGreatThreshold = -58f;
     float inPerfectThreshold = -46f;
@@ -140,8 +140,8 @@ public class GameSceneManager : MonoBehaviour
     float gameTime = 0;
     float speedTimer = 10f;
     float maxSpeedTimer = 10f;
-    float rowSpeed = 100f;
-    float enemySpeed = 60f;
+    float rowSpeed = 80f;
+    float enemySpeed = 40f;
     int gameScore = 0;
 
     Coroutine RateCoroutine;
@@ -418,10 +418,10 @@ public class GameSceneManager : MonoBehaviour
         GameScore.text = "<mspace=.6em>" + gameScore.ToString();
         GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
         GameOver.SetActive(false);
-        rowSpeed = 100f;
-        enemySpeed = 60f;
-        rowTimerMax = 1f;
-        speedTimer = maxSpeedTimer;
+        rowSpeed = 80f;
+        enemySpeed = 40f;
+        rowTimerMax = 1.2f;
+        speedTimer = maxSpeedTimer - 2f;
         Level.GetComponent<MoveNormal>().MoveUp();
     }
 
@@ -766,8 +766,8 @@ public class GameSceneManager : MonoBehaviour
         if (speedTimer <= 0)
         {
             speedTimer = maxSpeedTimer;
-            rowSpeed = Mathf.Min(205f, rowSpeed + 15f);
-            enemySpeed = Mathf.Min(205f, enemySpeed + 15f);
+            rowSpeed = Mathf.Min(215f, rowSpeed + 15f);
+            enemySpeed = Mathf.Min(175f, enemySpeed + 15f);
             rowTimerMax = Mathf.Max(.5f, rowTimerMax - .1f);
         }
     }
