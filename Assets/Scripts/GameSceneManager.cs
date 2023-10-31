@@ -125,7 +125,7 @@ public class GameSceneManager : MonoBehaviour
     List<GameObject> EnemiesOops = new List<GameObject>();
 
     float rowTimer = 0;
-    float rowTimerMax = 1f;
+    float rowTimerMax = 1.2f;
     float inGoodThreshold = -70f;
     float inGreatThreshold = -58f;
     float inPerfectThreshold = -46f;
@@ -134,14 +134,14 @@ public class GameSceneManager : MonoBehaviour
     int perfectCombo = 0;
     int addHitPointThreshold = 6;
     int killAllThreshold = 20;
-    int life = 4;
+    int life = 6;
     float lifebarMaxWidth = 43f;
-    int maxLife = 4;
+    int maxLife = 6;
     float gameTime = 0;
     float speedTimer = 10f;
     float maxSpeedTimer = 10f;
-    float rowSpeed = 100f;
-    float enemySpeed = 60f;
+    float rowSpeed = 80f;
+    float enemySpeed = 40f;
     int gameScore = 0;
 
     Coroutine RateCoroutine;
@@ -176,9 +176,63 @@ public class GameSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleTitle();
+        HandleIntro();
         GetReady();
         PlayGame();
         ShowGameOver();
+        HandleSummary();
+    }
+
+    void HandleTitle()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Title)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            SelectStartButton();
+        }
+    }
+    bool typing = true;
+    void HandleIntro()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Intro || typing)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            AdvanceIntro();
+        }
+    }
+    bool isPlayAgain = true;
+    void HandleSummary()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Summary || typing)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            if (isPlayAgain)
+                SelectPlayAgainButton();
+            else
+                SelectHomeButton();
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        {
+            isPlayAgain = false;
+            audioManager.PlayMenuSound();
+            HomeButton.GetComponent<Image>().color = new Color(255f/255f, 151f/255f, 151f/255f);
+            TryAgainButton.GetComponent<Image>().color = Color.white;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        {
+            isPlayAgain = true;
+            audioManager.PlayMenuSound();
+            TryAgainButton.GetComponent<Image>().color = new Color(255f/255f, 151f/255f, 151f/255f);
+            HomeButton.GetComponent<Image>().color = Color.white;
+        }
+
     }
 
     void GetReady()
@@ -249,7 +303,8 @@ public class GameSceneManager : MonoBehaviour
                 "and then the creatures gouged your eyes and face until you slowly bled to death."
             };
             summary += results[Random.Range(0, results.Length)];
-            SummaryText.GetComponent<TypewriterUI>().StartEffect("", summary);
+            SummaryText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(summary, 25));
+            typing = true;
             Globals.CurrentGameState = Globals.GameStates.Summary;
             audioManager.StartAmbient();
         }
@@ -261,7 +316,9 @@ public class GameSceneManager : MonoBehaviour
         audioManager.PlayButtonSound();
         Title.GetComponent<MoveNormal>().MoveUp();
         TitleButtons.GetComponent<MoveNormal>().MoveDown();   
-        IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
+        IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
+        typing = true;
+        Globals.CurrentGameState = Globals.GameStates.Intro;
     }
 
     public void SelectPlayAgainButton()
@@ -293,7 +350,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void EndText()
     {
-        if (Globals.CurrentGameState == Globals.GameStates.Title)
+        if (Globals.CurrentGameState == Globals.GameStates.Intro)
         {
             if (introIndex >= introText.Length - 1)
                 NextButtonText.text = "PLAY";
@@ -321,6 +378,7 @@ public class GameSceneManager : MonoBehaviour
             SummaryBestScore.SetActive(true);
             SummaryBestScore.GetComponent<GrowAndShrink>().StartEffect();
         }
+        typing = false;
     }
 
     public void AdvanceIntro()
@@ -329,8 +387,9 @@ public class GameSceneManager : MonoBehaviour
         introIndex++;
         if (introIndex < introText.Length)
         {
-            IntroText.GetComponent<TypewriterUI>().StartEffect("", introText[introIndex]);
+            IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
             NextButton.GetComponent<MoveNormal>().MoveDown();
+            typing = true;
         }
         else
         {
@@ -359,10 +418,10 @@ public class GameSceneManager : MonoBehaviour
         GameScore.text = "<mspace=.6em>" + gameScore.ToString();
         GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
         GameOver.SetActive(false);
-        rowSpeed = 100f;
-        enemySpeed = 60f;
-        rowTimerMax = 1f;
-        speedTimer = maxSpeedTimer;
+        rowSpeed = 80f;
+        enemySpeed = 40f;
+        rowTimerMax = 1.2f;
+        speedTimer = maxSpeedTimer - 2f;
         Level.GetComponent<MoveNormal>().MoveUp();
     }
 
@@ -707,8 +766,8 @@ public class GameSceneManager : MonoBehaviour
         if (speedTimer <= 0)
         {
             speedTimer = maxSpeedTimer;
-            rowSpeed = Mathf.Min(205f, rowSpeed + 15f);
-            enemySpeed = Mathf.Min(205f, enemySpeed + 15f);
+            rowSpeed = Mathf.Min(215f, rowSpeed + 15f);
+            enemySpeed = Mathf.Min(175f, enemySpeed + 15f);
             rowTimerMax = Mathf.Max(.5f, rowTimerMax - .1f);
         }
     }
@@ -844,8 +903,8 @@ public class GameSceneManager : MonoBehaviour
     {
         audioManager.PlayAddHitPointSound();
         life++;
-        if (life > 4)
-            life = 4;
+        if (life > maxLife)
+            life = maxLife;
         float newLifebarWidth = lifebarMaxWidth * (float)life / (float)maxLife;
         LifeBar.GetComponent<RectTransform>().sizeDelta = new Vector2(newLifebarWidth, 7f);
         LifeBarContainer.GetComponent<GrowAndShrink>().StartEffect();
