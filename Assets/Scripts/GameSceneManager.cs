@@ -194,9 +194,10 @@ public class GameSceneManager : MonoBehaviour
             SelectStartButton();
         }
     }
+    bool typing = true;
     void HandleIntro()
     {
-        if (Globals.CurrentGameState != Globals.GameStates.Intro)
+        if (Globals.CurrentGameState != Globals.GameStates.Intro || typing)
             return; 
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
@@ -207,7 +208,7 @@ public class GameSceneManager : MonoBehaviour
     bool isPlayAgain = true;
     void HandleSummary()
     {
-        if (Globals.CurrentGameState != Globals.GameStates.Summary)
+        if (Globals.CurrentGameState != Globals.GameStates.Summary || typing)
             return; 
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
@@ -303,6 +304,7 @@ public class GameSceneManager : MonoBehaviour
             };
             summary += results[Random.Range(0, results.Length)];
             SummaryText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(summary, 25));
+            typing = true;
             Globals.CurrentGameState = Globals.GameStates.Summary;
             audioManager.StartAmbient();
         }
@@ -315,6 +317,7 @@ public class GameSceneManager : MonoBehaviour
         Title.GetComponent<MoveNormal>().MoveUp();
         TitleButtons.GetComponent<MoveNormal>().MoveDown();   
         IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
+        typing = true;
         Globals.CurrentGameState = Globals.GameStates.Intro;
     }
 
@@ -375,6 +378,7 @@ public class GameSceneManager : MonoBehaviour
             SummaryBestScore.SetActive(true);
             SummaryBestScore.GetComponent<GrowAndShrink>().StartEffect();
         }
+        typing = false;
     }
 
     public void AdvanceIntro()
@@ -385,6 +389,7 @@ public class GameSceneManager : MonoBehaviour
         {
             IntroText.GetComponent<TypewriterUI>().StartEffect("", Globals.StringWithBreaks(introText[introIndex], 25));
             NextButton.GetComponent<MoveNormal>().MoveDown();
+            typing = true;
         }
         else
         {
