@@ -181,6 +181,7 @@ public class GameSceneManager : MonoBehaviour
         GetReady();
         PlayGame();
         ShowGameOver();
+        HandleSummary();
     }
 
     void HandleTitle()
@@ -202,6 +203,35 @@ public class GameSceneManager : MonoBehaviour
         {
             AdvanceIntro();
         }
+    }
+    bool isPlayAgain = true;
+    void HandleSummary()
+    {
+        if (Globals.CurrentGameState != Globals.GameStates.Summary)
+            return; 
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            if (isPlayAgain)
+                SelectPlayAgainButton();
+            else
+                SelectHomeButton();
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        {
+            isPlayAgain = false;
+            audioManager.PlayMenuSound();
+            HomeButton.GetComponent<Image>().color = new Color(255f/255f, 151f/255f, 151f/255f);
+            TryAgainButton.GetComponent<Image>().color = Color.white;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        {
+            isPlayAgain = true;
+            audioManager.PlayMenuSound();
+            TryAgainButton.GetComponent<Image>().color = new Color(255f/255f, 151f/255f, 151f/255f);
+            HomeButton.GetComponent<Image>().color = Color.white;
+        }
+
     }
 
     void GetReady()
