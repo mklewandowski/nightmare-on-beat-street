@@ -118,6 +118,8 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI MobileToggleButtonText;
     bool showMobileButtons = true;
+    [SerializeField]
+    GameObject TutorialPanel;
 
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
@@ -191,7 +193,10 @@ public class GameSceneManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
-            SelectStartButton();
+            if (showTutorial)
+                HideTutorial();
+            else
+                SelectStartButton();
         }
     }
     bool typing = true;
@@ -963,4 +968,21 @@ public class GameSceneManager : MonoBehaviour
         MobileToggleButtonText.text = showMobileButtons ? "mobile buttons: ON" : "mobile buttons: OFF";
     }
 
+    bool showTutorial = false;
+    public void ShowTutorial()
+    {
+        audioManager.PlayMenuSound();
+        TutorialPanel.GetComponent<MoveNormal>().MoveUp();
+        Title.GetComponent<MoveNormal>().MoveUp();
+        TitleButtons.GetComponent<MoveNormal>().MoveDown();
+        showTutorial = true;
+    }
+    public void HideTutorial()
+    {
+        audioManager.PlayMenuSound();
+        TutorialPanel.GetComponent<MoveNormal>().MoveDown();
+        Title.GetComponent<MoveNormal>().MoveDown();
+        TitleButtons.GetComponent<MoveNormal>().MoveUp();
+        showTutorial = false;
+    }
 }
