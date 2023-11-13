@@ -1,5 +1,5 @@
 # nightmare-on-beat-street
-Nightmare on Beat Street is a horror rhythm game inspired by DDR, Thriller, and '80s horror movies.
+Nightmare on Beat Street is a horror rhythm game inspired by DDR, Thriller, and '80s horror movies. It was created in less than a week for the 2023 itch.io Halloween Scream Jam.
 
 ## Gameplay
 ![Nightmare on Beat Street gameplay](https://github.com/mklewandowski/nightmare-on-beat-street/blob/main/Assets/Images/nightmare-gameplay-small.gif?raw=true)
@@ -29,5 +29,5 @@ Use the following steps to run locally:
 - Created using Unity
 - Code edited using Visual Studio Code
 - Audio edited using [Audacity](https://www.audacityteam.org/)
-- Found images edited and new images created using [Paint.NET](https://www.getpaint.net/)
+- Images edited and created using [Paint.NET](https://www.getpaint.net/)
 - Creature art courtesy of Hoen Anderson
