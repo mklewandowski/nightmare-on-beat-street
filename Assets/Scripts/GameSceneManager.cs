@@ -122,12 +122,17 @@ public class GameSceneManager : MonoBehaviour
     GameObject TutorialPanel;
 
     List<GameObject> RowPool = new List<GameObject>();
+    List<Row> RowPoolScripts = new List<Row>();
     List<GameObject> Rows = new List<GameObject>();
     List<Row> RowScripts = new List<Row>();
     List<GameObject> EnemyPool = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
     List<GameObject> EnemiesOops = new List<GameObject>();
+    List<Enemy> EnemyPoolScripts = new List<Enemy>();
+    List<Enemy> EnemiesScripts = new List<Enemy>();
+    List<Enemy> EnemiesMissedScripts = new List<Enemy>();
+    List<Enemy> EnemiesOopsScripts = new List<Enemy>();
 
     float rowTimer = 0;
     float rowTimerMax = 1.8f;
@@ -177,11 +182,13 @@ public class GameSceneManager : MonoBehaviour
             rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
             rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
             RowPool.Add(row);
+            RowPoolScripts.Add(row.GetComponent<Row>());
         }
         for (int x = 0; x < 10; x++)
         {
             GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             EnemyPool.Add(enemy);
+            EnemyPoolScripts.Add(enemy.GetComponent<Enemy>());
         }
     }
 
@@ -535,8 +542,9 @@ public class GameSceneManager : MonoBehaviour
                 }
                 StartCoroutine(ShowHighlight(RowScripts[0].Orientation, Color.yellow, .15f, .3f));
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
-                Enemies[0].GetComponent<Enemy>().DeActivate();
+                EnemiesScripts[0].DeActivate();
                 Enemies.RemoveAt(0);
+                EnemiesScripts.RemoveAt(0);
                 audioManager.PlayHitEnemySound();            
             }
             else 
@@ -550,7 +558,9 @@ public class GameSceneManager : MonoBehaviour
                 perfectCombo = 0;
                 HidePerfectCombo();
                 EnemiesMissed.Add(Enemies[0]);
+                EnemiesMissedScripts.Add(EnemiesScripts[0]);
                 Enemies.RemoveAt(0);
+                EnemiesScripts.RemoveAt(0);
             }
             RowScripts[0].DeActivate();
             Rows.RemoveAt(0);
@@ -626,44 +636,46 @@ public class GameSceneManager : MonoBehaviour
             RowScripts.RemoveAt(0);
 
             EnemiesMissed.Add(Enemies[0]);
+            EnemiesMissedScripts.Add(EnemiesScripts[0]);
             Enemies.RemoveAt(0);
+            EnemiesScripts.RemoveAt(0);
         }
     }
 
     void MoveEnemies()
     {
         bool deleteFirst = false;
+        int index = 0;
         foreach (GameObject e in Enemies)
         {
             float xSpeed = 0;
             float ySpeed = enemySpeed * -1f;
-            Enemy enemy = e.GetComponent<Enemy>();
-            if (enemy.StartPosition == Globals.StartPositions.Left)
+            if (EnemiesScripts[index].StartPosition == Globals.StartPositions.Left)
             {
                 ySpeed = 0;
                 xSpeed = enemySpeed;
             }
-            else if (enemy.StartPosition == Globals.StartPositions.Right)
+            else if (EnemiesScripts[index].StartPosition == Globals.StartPositions.Right)
             {
                 ySpeed = 0;
                 xSpeed = enemySpeed * -1f;
             }
             e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
+            index++;
         }
-
+        index = 0;
         foreach (GameObject e in EnemiesMissed)
         {
             float xSpeed = 0;
             float ySpeed = enemySpeed * -1f;
-            Enemy enemy = e.GetComponent<Enemy>();
-            if (enemy.StartPosition == Globals.StartPositions.Left)
+            if (EnemiesMissedScripts[index].StartPosition == Globals.StartPositions.Left)
             {
                 ySpeed = 0;
                 xSpeed = enemySpeed;
                 if (Mathf.Abs(e.transform.localPosition.x) < 10f)
                     deleteFirst = true;
             }
-            else if (enemy.StartPosition == Globals.StartPositions.Right)
+            else if (EnemiesMissedScripts[index].StartPosition == Globals.StartPositions.Right)
             {
                 ySpeed = 0;
                 xSpeed = enemySpeed * -1f;
@@ -676,13 +688,15 @@ public class GameSceneManager : MonoBehaviour
                     deleteFirst = true;
             }
             e.transform.localPosition = new Vector3(e.transform.localPosition.x + xSpeed * Time.deltaTime, e.transform.localPosition.y + ySpeed * Time.deltaTime, e.transform.localPosition.z);
+            index++;
         }
         if (deleteFirst)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesMissed[0].GetComponent<RectTransform>().anchoredPosition;
-            EnemiesMissed[0].GetComponent<Enemy>().DeActivate();
+            EnemiesMissedScripts[0].DeActivate();
             EnemiesMissed.RemoveAt(0);
+            EnemiesMissedScripts.RemoveAt(0);
             HitPlayer();
         }
 
@@ -701,8 +715,9 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesOops[0].GetComponent<RectTransform>().anchoredPosition;
-            EnemiesOops[0].GetComponent<Enemy>().DeActivate();
+            EnemiesOopsScripts[0].DeActivate();
             EnemiesOops.RemoveAt(0);
+            EnemiesOopsScripts.RemoveAt(0);
             HitPlayer();
         }
     }
@@ -747,19 +762,24 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            e.GetComponent<Enemy>().DeActivate();
+            EnemiesScripts[index].DeActivate();
+            index++;
         }
+        index = 0;
         foreach (GameObject e in EnemiesMissed)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            e.GetComponent<Enemy>().DeActivate();
+            EnemiesMissedScripts[index].DeActivate();
+            index++;
         }
+        index = 0;
         foreach (GameObject e in EnemiesOops)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            e.GetComponent<Enemy>().DeActivate();
+            EnemiesOopsScripts[index].DeActivate();
+            index++;
         }
         index = 0;
         foreach (GameObject r in Rows)
@@ -772,6 +792,9 @@ public class GameSceneManager : MonoBehaviour
         Enemies.Clear();
         EnemiesMissed.Clear();
         EnemiesOops.Clear();
+        EnemiesScripts.Clear();
+        EnemiesMissedScripts.Clear();
+        EnemiesOopsScripts.Clear();
         Rows.Clear();
         RowScripts.Clear();
     }
@@ -827,14 +850,14 @@ public class GameSceneManager : MonoBehaviour
         {
             for (int x = 0; x < RowPool.Count; x++)
             {
-                if (!RowPool[x].GetComponent<Row>().InUse)
+                if (!RowPoolScripts[x].InUse)
                 {
                     RectTransform rt = RowPool[x].GetComponent<RectTransform>();
                     rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
                     rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
-                    RowPool[x].GetComponent<Row>().Activate(newOrientation);
+                    RowPoolScripts[x].Activate(newOrientation);
                     Rows.Add(RowPool[x]);
-                    RowScripts.Add(RowPool[x].GetComponent<Row>());
+                    RowScripts.Add(RowPoolScripts[x]);
                     break;
                 }
             }            
@@ -846,7 +869,7 @@ public class GameSceneManager : MonoBehaviour
     {
         for (int x = 0; x < EnemyPool.Count; x++)
         {
-            if (!EnemyPool[x].GetComponent<Enemy>().InUse)
+            if (!EnemyPoolScripts[x].InUse)
             {
                 RectTransform rt = EnemyPool[x].GetComponent<RectTransform>();
                 float newY = 245f;
@@ -858,8 +881,9 @@ public class GameSceneManager : MonoBehaviour
                 else if (newOrientation == Globals.Orientations.Right)
                     newX = 185f;
                 rt.anchoredPosition = new Vector2(newX, newY);
-                EnemyPool[x].GetComponent<Enemy>().Activate(newOrientation);
+                EnemyPoolScripts[x].Activate(newOrientation);
                 Enemies.Add(EnemyPool[x]);
+                EnemiesScripts.Add(EnemyPoolScripts[x]);
                 break;
             }
         } 
@@ -869,15 +893,16 @@ public class GameSceneManager : MonoBehaviour
     {
         for (int x = 0; x < EnemyPool.Count; x++)
         {
-            if (!EnemyPool[x].GetComponent<Enemy>().InUse)
+            if (!EnemyPoolScripts[x].InUse)
             {
                 RectTransform rt = EnemyPool[x].GetComponent<RectTransform>();
                 float newY = 210f;
                 float newX = 165f;
                 rt.anchoredPosition = new Vector2(newX, newY);
-                EnemyPool[x].GetComponent<Enemy>().Activate(newOrientation);
-                EnemyPool[x].GetComponent<Enemy>().SetType(Globals.EnemyTypes.Pumpkin);
+                EnemyPoolScripts[x].Activate(newOrientation);
+                EnemyPoolScripts[x].SetType(Globals.EnemyTypes.Pumpkin);
                 EnemiesOops.Add(EnemyPool[x]);
+                EnemiesOopsScripts.Add(EnemyPoolScripts[x]);
                 break;
             }
         } 
