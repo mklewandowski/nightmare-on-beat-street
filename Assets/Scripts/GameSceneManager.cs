@@ -127,7 +127,7 @@ public class GameSceneManager : MonoBehaviour
     List<GameObject> EnemiesOops = new List<GameObject>();
 
     float rowTimer = 0;
-    float rowTimerMax = 1.2f;
+    float rowTimerMax = 1.8f;
     float inGoodThreshold = -70f;
     float inGreatThreshold = -58f;
     float inPerfectThreshold = -46f;
@@ -141,9 +141,9 @@ public class GameSceneManager : MonoBehaviour
     int maxLife = 6;
     float gameTime = 0;
     float speedTimer = 10f;
-    float maxSpeedTimer = 10f;
-    float rowSpeed = 80f;
-    float enemySpeed = 40f;
+    float maxSpeedTimer = 8f; // changes to 10
+    float rowSpeed = 50f;
+    float enemySpeed = 50f;
     int gameScore = 0;
 
     Coroutine RateCoroutine;
@@ -237,7 +237,6 @@ public class GameSceneManager : MonoBehaviour
             TryAgainButton.GetComponent<Image>().color = new Color(255f/255f, 151f/255f, 151f/255f);
             HomeButton.GetComponent<Image>().color = Color.white;
         }
-
     }
 
     void GetReady()
@@ -423,10 +422,11 @@ public class GameSceneManager : MonoBehaviour
         GameScore.text = "<mspace=.6em>" + gameScore.ToString();
         GameTime.text = "<mspace=.6em>" + gameTime.ToString("0.0");
         GameOver.SetActive(false);
-        rowSpeed = 80f;
-        enemySpeed = 40f;
-        rowTimerMax = 1.2f;
-        speedTimer = maxSpeedTimer - 2f;
+        rowSpeed = 50f;
+        enemySpeed = 50f;
+        rowTimerMax = 1.8f;
+        maxSpeedTimer = 8f;
+        speedTimer = maxSpeedTimer;
         Level.GetComponent<MoveNormal>().MoveUp();
     }
 
@@ -770,10 +770,18 @@ public class GameSceneManager : MonoBehaviour
         speedTimer -= Time.deltaTime;
         if (speedTimer <= 0)
         {
+            float increment = 10f;
+            float decrement = .2f;
+            if (rowSpeed >= 80f)
+            {
+                maxSpeedTimer = 10f;
+                increment = 15f;
+                decrement = .1f;
+            }
+            rowSpeed = Mathf.Min(215f, rowSpeed + increment);
+            enemySpeed = Mathf.Min(215f, enemySpeed + increment);
+            rowTimerMax = Mathf.Max(.5f, rowTimerMax - decrement);
             speedTimer = maxSpeedTimer;
-            rowSpeed = Mathf.Min(215f, rowSpeed + 15f);
-            enemySpeed = Mathf.Min(175f, enemySpeed + 15f);
-            rowTimerMax = Mathf.Max(.5f, rowTimerMax - .1f);
         }
     }
 
@@ -796,7 +804,7 @@ public class GameSceneManager : MonoBehaviour
             GameObject row = Instantiate(RowPrefab, new Vector3(0, -100f, 0), Quaternion.identity, RowContainer.transform);
             RectTransform rt = row.GetComponent<RectTransform>();
             rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
-            rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -200f, rt.transform.localPosition.z);
+            rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
             row.GetComponent<Row>().SetArrow(newOrientation);
             row.GetComponent<Row>().Orientation = newOrientation;
             Rows.Add(row);
@@ -808,14 +816,14 @@ public class GameSceneManager : MonoBehaviour
     {
         GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
         RectTransform rt = enemy.GetComponent<RectTransform>();
-        float newY = 210f;
+        float newY = 245f;
         if (newOrientation == Globals.Orientations.Left || newOrientation == Globals.Orientations.Right)
             newY = 50f;
         float newX = 0f;
         if (newOrientation == Globals.Orientations.Left)
-            newX = -150f;
+            newX = -185f;
         else if (newOrientation == Globals.Orientations.Right)
-            newX = 150f;
+            newX = 185f;
         rt.anchoredPosition = new Vector2(newX, newY);
         enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
         Enemies.Add(enemy);

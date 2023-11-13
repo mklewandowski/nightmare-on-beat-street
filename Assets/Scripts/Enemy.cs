@@ -40,5 +40,4 @@ public class Enemy : MonoBehaviour
         Sprites[(int)Type].SetActive(true);
     }
         
-    
 }
