@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Row : MonoBehaviour
 {
     public Globals.Orientations Orientation;
-    public bool IsLast = false;
     public Globals.ScoreQualities CurrentScoreQuality = Globals.ScoreQualities.Invalid;
 
     [SerializeField]
@@ -17,6 +17,33 @@ public class Row : MonoBehaviour
     GameObject[] Great;
     [SerializeField]
     GameObject[] Perfect;
+
+    public bool InUse = false;
+
+    public void Activate(Globals.Orientations newOrientation)
+    {
+        SetArrow(newOrientation);
+        InUse = true;
+        this.gameObject.SetActive(true);
+    }
+    public void DeActivate()
+    {
+        InUse = false;
+        CurrentScoreQuality = Globals.ScoreQualities.Invalid;
+        this.gameObject.SetActive(false);
+        foreach (GameObject g in Good)
+        {
+            g.SetActive(false);
+        }
+        foreach (GameObject g in Great)
+        {
+            g.SetActive(false);
+        }
+        foreach (GameObject g in Perfect)
+        {
+            g.SetActive(false);
+        }
+    }
 
     public void SetArrow(Globals.Orientations newOrientation)
     {

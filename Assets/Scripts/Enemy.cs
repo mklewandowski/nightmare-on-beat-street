@@ -9,6 +9,25 @@ public class Enemy : MonoBehaviour
 
     public GameObject[] Sprites;
 
+    public bool InUse = false;
+
+    public void Activate(Globals.Orientations orientation)
+    {
+        ConfigureEnemy(orientation);
+        InUse = true;
+        this.gameObject.SetActive(true);
+    }
+    public void DeActivate()
+    {
+        InUse = false;
+        this.gameObject.SetActive(false);
+        foreach (GameObject g in Sprites)
+        {
+            g.SetActive(false);
+            g.transform.localEulerAngles = new Vector3(0, 0, 0);
+        }
+    }
+
     public void ConfigureEnemy(Globals.Orientations orientation)
     {
         if (orientation == Globals.Orientations.Down || orientation == Globals.Orientations.Up)
@@ -40,5 +59,4 @@ public class Enemy : MonoBehaviour
         Sprites[(int)Type].SetActive(true);
     }
         
-    
 }
