@@ -123,6 +123,7 @@ public class GameSceneManager : MonoBehaviour
 
     List<GameObject> RowPool = new List<GameObject>();
     List<GameObject> Rows = new List<GameObject>();
+    List<Row> RowScripts = new List<Row>();
     List<GameObject> EnemyPool = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
@@ -490,11 +491,11 @@ public class GameSceneManager : MonoBehaviour
     {
         if (Globals.CurrentGameState != Globals.GameStates.Playing)
             return;
-        if (Rows.Count > 0 && Rows[0].GetComponent<Row>().CurrentScoreQuality != Globals.ScoreQualities.Invalid)
+        if (Rows.Count > 0 && RowScripts[0].CurrentScoreQuality != Globals.ScoreQualities.Invalid)
         {
-            if (Rows[0].GetComponent<Row>().Orientation == inputOrientation)
+            if (RowScripts[0].Orientation == inputOrientation)
             {
-                if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Good)
+                if (RowScripts[0].CurrentScoreQuality == Globals.ScoreQualities.Good)
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GOOD", goodColor));
@@ -505,7 +506,7 @@ public class GameSceneManager : MonoBehaviour
                     perfectCombo = 0;
                     HidePerfectCombo();
                 }
-                else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Great)
+                else if (RowScripts[0].CurrentScoreQuality == Globals.ScoreQualities.Great)
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("GREAT", goodColor));
@@ -516,7 +517,7 @@ public class GameSceneManager : MonoBehaviour
                     perfectCombo = 0;
                     HidePerfectCombo();
                 }
-                else if (Rows[0].GetComponent<Row>().CurrentScoreQuality == Globals.ScoreQualities.Perfect)
+                else if (RowScripts[0].CurrentScoreQuality == Globals.ScoreQualities.Perfect)
                 {
                     if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                     RateCoroutine = StartCoroutine(ShowRate("PERFECT", goodColor));
@@ -532,7 +533,7 @@ public class GameSceneManager : MonoBehaviour
                         AddHitPoints();
                     }
                 }
-                StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
+                StartCoroutine(ShowHighlight(RowScripts[0].Orientation, Color.yellow, .15f, .3f));
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
                 Enemies[0].GetComponent<Enemy>().DeActivate();
                 Enemies.RemoveAt(0);
@@ -541,7 +542,7 @@ public class GameSceneManager : MonoBehaviour
             else 
             {
                 audioManager.PlayBadInputSound();
-                StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, badColor, .15f, .3f));
+                StartCoroutine(ShowHighlight(RowScripts[0].Orientation, badColor, .15f, .3f));
                 if (RateCoroutine != null) StopCoroutine(RateCoroutine);
                 RateCoroutine = StartCoroutine(ShowRate("WRONG", badColor));
                 combo = 0;
@@ -551,8 +552,9 @@ public class GameSceneManager : MonoBehaviour
                 EnemiesMissed.Add(Enemies[0]);
                 Enemies.RemoveAt(0);
             }
-            Rows[0].GetComponent<Row>().DeActivate();
+            RowScripts[0].DeActivate();
             Rows.RemoveAt(0);
+            RowScripts.RemoveAt(0);
 
             if (combo > 0 && combo % killAllThreshold == 0)
             {
@@ -587,26 +589,27 @@ public class GameSceneManager : MonoBehaviour
     void MoveRows()
     {
         bool deleteFirst = false;
+        int index = 0;
         foreach (GameObject r in Rows)
         {
             r.transform.localPosition = new Vector3(r.transform.localPosition.x, r.transform.localPosition.y + rowSpeed * Time.deltaTime, r.transform.localPosition.z);
-            Row row = r.GetComponent<Row>();
-            if (r.transform.localPosition.y >= inGoodThreshold && r.transform.localPosition.y < inGreatThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Good)
+            if (r.transform.localPosition.y >= inGoodThreshold && r.transform.localPosition.y < inGreatThreshold && RowScripts[index].CurrentScoreQuality != Globals.ScoreQualities.Good)
             {
-                r.GetComponent<Row>().SetGood();
+                RowScripts[index].SetGood();
             }
-            else if (r.transform.localPosition.y >= inGreatThreshold && r.transform.localPosition.y < inPerfectThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Great)
+            else if (r.transform.localPosition.y >= inGreatThreshold && r.transform.localPosition.y < inPerfectThreshold && RowScripts[index].CurrentScoreQuality != Globals.ScoreQualities.Great)
             {
-                r.GetComponent<Row>().SetGreat();
+                RowScripts[index].SetGreat();
             }
-            else if (r.transform.localPosition.y >= inPerfectThreshold && r.transform.localPosition.y < destroyThreshold && row.CurrentScoreQuality != Globals.ScoreQualities.Perfect)
+            else if (r.transform.localPosition.y >= inPerfectThreshold && r.transform.localPosition.y < destroyThreshold && RowScripts[index].CurrentScoreQuality != Globals.ScoreQualities.Perfect)
             {
-                r.GetComponent<Row>().SetPerfect();
+                RowScripts[index].SetPerfect();
             }
             else if (r.transform.localPosition.y >= destroyThreshold)
             {
                 deleteFirst = true;
             }
+            index++;
         }
         if (deleteFirst)
         {
@@ -618,8 +621,9 @@ public class GameSceneManager : MonoBehaviour
             perfectCombo = 0;
             HidePerfectCombo();
 
-            Rows[0].GetComponent<Row>().DeActivate();
+            RowScripts[0].DeActivate();
             Rows.RemoveAt(0);
+            RowScripts.RemoveAt(0);
 
             EnemiesMissed.Add(Enemies[0]);
             Enemies.RemoveAt(0);
@@ -738,6 +742,7 @@ public class GameSceneManager : MonoBehaviour
 
     void ClearArrowsAndEnemies()
     {
+        int index = 0;
         foreach (GameObject e in Enemies)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
@@ -756,16 +761,19 @@ public class GameSceneManager : MonoBehaviour
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
             e.GetComponent<Enemy>().DeActivate();
         }
+        index = 0;
         foreach (GameObject r in Rows)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = r.GetComponent<RectTransform>().anchoredPosition;
-            r.GetComponent<Row>().DeActivate();
+            RowScripts[index].DeActivate();
+            index++;
         }
         Enemies.Clear();
         EnemiesMissed.Clear();
         EnemiesOops.Clear();
         Rows.Clear();
+        RowScripts.Clear();
     }
 
     void HandleTime()
@@ -826,6 +834,7 @@ public class GameSceneManager : MonoBehaviour
                     rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
                     RowPool[x].GetComponent<Row>().Activate(newOrientation);
                     Rows.Add(RowPool[x]);
+                    RowScripts.Add(RowPool[x].GetComponent<Row>());
                     break;
                 }
             }            
