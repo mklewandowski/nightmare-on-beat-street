@@ -123,6 +123,7 @@ public class GameSceneManager : MonoBehaviour
 
     List<GameObject> RowPool = new List<GameObject>();
     List<GameObject> Rows = new List<GameObject>();
+    List<GameObject> EnemyPool = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
     List<GameObject> EnemiesOops = new List<GameObject>();
@@ -175,6 +176,11 @@ public class GameSceneManager : MonoBehaviour
             rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
             rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
             RowPool.Add(row);
+        }
+        for (int x = 0; x < 10; x++)
+        {
+            GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
+            EnemyPool.Add(enemy);
         }
     }
 
@@ -528,7 +534,7 @@ public class GameSceneManager : MonoBehaviour
                 }
                 StartCoroutine(ShowHighlight(Rows[0].GetComponent<Row>().Orientation, Color.yellow, .15f, .3f));
                 AttackEnemy(Enemies[0].GetComponent<RectTransform>().anchoredPosition, inputOrientation == Globals.Orientations.Right || inputOrientation == Globals.Orientations.Up);
-                Destroy(Enemies[0]);
+                Enemies[0].GetComponent<Enemy>().DeActivate();
                 Enemies.RemoveAt(0);
                 audioManager.PlayHitEnemySound();            
             }
@@ -671,7 +677,7 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesMissed[0].GetComponent<RectTransform>().anchoredPosition;
-            Destroy(EnemiesMissed[0]);
+            EnemiesMissed[0].GetComponent<Enemy>().DeActivate();
             EnemiesMissed.RemoveAt(0);
             HitPlayer();
         }
@@ -691,7 +697,7 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = EnemiesOops[0].GetComponent<RectTransform>().anchoredPosition;
-            Destroy(EnemiesOops[0]);
+            EnemiesOops[0].GetComponent<Enemy>().DeActivate();
             EnemiesOops.RemoveAt(0);
             HitPlayer();
         }
@@ -736,19 +742,19 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            Destroy(e);
+            e.GetComponent<Enemy>().DeActivate();
         }
         foreach (GameObject e in EnemiesMissed)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            Destroy(e);
+            e.GetComponent<Enemy>().DeActivate();
         }
         foreach (GameObject e in EnemiesOops)
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = e.GetComponent<RectTransform>().anchoredPosition;
-            Destroy(e);
+            e.GetComponent<Enemy>().DeActivate();
         }
         foreach (GameObject r in Rows)
         {
@@ -829,31 +835,43 @@ public class GameSceneManager : MonoBehaviour
 
     void CreateEnemy(Globals.Orientations newOrientation)
     {
-        GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
-        RectTransform rt = enemy.GetComponent<RectTransform>();
-        float newY = 245f;
-        if (newOrientation == Globals.Orientations.Left || newOrientation == Globals.Orientations.Right)
-            newY = 50f;
-        float newX = 0f;
-        if (newOrientation == Globals.Orientations.Left)
-            newX = -185f;
-        else if (newOrientation == Globals.Orientations.Right)
-            newX = 185f;
-        rt.anchoredPosition = new Vector2(newX, newY);
-        enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
-        Enemies.Add(enemy);
+        for (int x = 0; x < EnemyPool.Count; x++)
+        {
+            if (!EnemyPool[x].GetComponent<Enemy>().InUse)
+            {
+                RectTransform rt = EnemyPool[x].GetComponent<RectTransform>();
+                float newY = 245f;
+                if (newOrientation == Globals.Orientations.Left || newOrientation == Globals.Orientations.Right)
+                    newY = 50f;
+                float newX = 0f;
+                if (newOrientation == Globals.Orientations.Left)
+                    newX = -185f;
+                else if (newOrientation == Globals.Orientations.Right)
+                    newX = 185f;
+                rt.anchoredPosition = new Vector2(newX, newY);
+                EnemyPool[x].GetComponent<Enemy>().Activate(newOrientation);
+                Enemies.Add(EnemyPool[x]);
+                break;
+            }
+        } 
     }
 
     void CreateOopsEnemy(Globals.Orientations newOrientation)
     {
-        GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
-        RectTransform rt = enemy.GetComponent<RectTransform>();
-        float newY = 210f;
-        float newX = 165f;
-        rt.anchoredPosition = new Vector2(newX, newY);
-        enemy.GetComponent<Enemy>().ConfigureEnemy(newOrientation);
-        enemy.GetComponent<Enemy>().SetType(Globals.EnemyTypes.Pumpkin);
-        EnemiesOops.Add(enemy);
+        for (int x = 0; x < EnemyPool.Count; x++)
+        {
+            if (!EnemyPool[x].GetComponent<Enemy>().InUse)
+            {
+                RectTransform rt = EnemyPool[x].GetComponent<RectTransform>();
+                float newY = 210f;
+                float newX = 165f;
+                rt.anchoredPosition = new Vector2(newX, newY);
+                EnemyPool[x].GetComponent<Enemy>().Activate(newOrientation);
+                EnemyPool[x].GetComponent<Enemy>().SetType(Globals.EnemyTypes.Pumpkin);
+                EnemiesOops.Add(EnemyPool[x]);
+                break;
+            }
+        } 
     }
 
     IEnumerator ShowHighlight(Globals.Orientations o, Color c, float inTime, float outTime)
