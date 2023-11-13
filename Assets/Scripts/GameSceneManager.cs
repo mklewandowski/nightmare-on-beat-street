@@ -121,6 +121,7 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     GameObject TutorialPanel;
 
+    List<GameObject> RowPool = new List<GameObject>();
     List<GameObject> Rows = new List<GameObject>();
     List<GameObject> Enemies = new List<GameObject>();
     List<GameObject> EnemiesMissed = new List<GameObject>();
@@ -166,6 +167,15 @@ public class GameSceneManager : MonoBehaviour
         showMobileButtons = showMobile == 1;
         SetMobileButtons();
         audioManager = this.GetComponent<AudioManager>();
+
+        for (int x = 0; x < 10; x++)
+        {
+            GameObject row = Instantiate(RowPrefab, new Vector3(0, -100f, 0), Quaternion.identity, RowContainer.transform);
+            RectTransform rt = row.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
+            rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
+            RowPool.Add(row);
+        }
     }
 
     // Start is called before the first frame update
@@ -535,7 +545,7 @@ public class GameSceneManager : MonoBehaviour
                 EnemiesMissed.Add(Enemies[0]);
                 Enemies.RemoveAt(0);
             }
-            Destroy(Rows[0]);
+            Rows[0].GetComponent<Row>().DeActivate();
             Rows.RemoveAt(0);
 
             if (combo > 0 && combo % killAllThreshold == 0)
@@ -602,7 +612,7 @@ public class GameSceneManager : MonoBehaviour
             perfectCombo = 0;
             HidePerfectCombo();
 
-            Destroy(Rows[0]);
+            Rows[0].GetComponent<Row>().DeActivate();
             Rows.RemoveAt(0);
 
             EnemiesMissed.Add(Enemies[0]);
@@ -744,7 +754,7 @@ public class GameSceneManager : MonoBehaviour
         {
             GameObject bGO = Instantiate(FlashPrefab, new Vector3(0, 0, 0), Quaternion.identity, EnemyContainer.transform);
             bGO.GetComponent<RectTransform>().anchoredPosition = r.GetComponent<RectTransform>().anchoredPosition;
-            Destroy(r);
+            r.GetComponent<Row>().DeActivate();
         }
         Enemies.Clear();
         EnemiesMissed.Clear();
@@ -801,13 +811,18 @@ public class GameSceneManager : MonoBehaviour
         
         if (newOrientation != Globals.Orientations.None)
         {
-            GameObject row = Instantiate(RowPrefab, new Vector3(0, -100f, 0), Quaternion.identity, RowContainer.transform);
-            RectTransform rt = row.GetComponent<RectTransform>();
-            rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
-            rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
-            row.GetComponent<Row>().SetArrow(newOrientation);
-            row.GetComponent<Row>().Orientation = newOrientation;
-            Rows.Add(row);
+            for (int x = 0; x < RowPool.Count; x++)
+            {
+                if (!RowPool[x].GetComponent<Row>().InUse)
+                {
+                    RectTransform rt = RowPool[x].GetComponent<RectTransform>();
+                    rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
+                    rt.transform.localPosition = new Vector3(rt.transform.localPosition.x, -189f, rt.transform.localPosition.z);
+                    RowPool[x].GetComponent<Row>().Activate(newOrientation);
+                    Rows.Add(RowPool[x]);
+                    break;
+                }
+            }            
             CreateEnemy(newOrientation);
         }
     }
